@@ -31,7 +31,8 @@ public final class InMemoryBolsilloRepository implements BolsilloRepository {
                     secuencia.getAndIncrement(),
                     bolsillo.nombre(),
                     bolsillo.objetivo(),
-                    bolsillo.acumulado()
+                    bolsillo.acumulado(),
+                    bolsillo.archivado()
             );
             bolsillos.add(conId);
             return conId;
@@ -42,7 +43,9 @@ public final class InMemoryBolsilloRepository implements BolsilloRepository {
     }
 
     @Override
-    public List<Bolsillo> findAll() {
-        return List.copyOf(bolsillos);
+    public List<Bolsillo> findByArchivado(boolean archivado) {
+        return bolsillos.stream()
+                .filter(b -> b.archivado() == archivado)
+                .toList();
     }
 }

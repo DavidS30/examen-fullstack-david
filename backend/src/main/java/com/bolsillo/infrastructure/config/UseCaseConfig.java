@@ -2,6 +2,7 @@ package com.bolsillo.infrastructure.config;
 
 import com.bolsillo.application.ports.BolsilloRepository;
 import com.bolsillo.application.ports.NotificadorPort;
+import com.bolsillo.application.usecase.ArchivarBolsilloUseCase;
 import com.bolsillo.application.usecase.CrearBolsilloUseCase;
 import com.bolsillo.application.usecase.ListarBolsillosUseCase;
 import com.bolsillo.application.usecase.RegistrarAbonoUseCase;
@@ -31,5 +32,10 @@ public class UseCaseConfig {
     @Bean
     public ListarBolsillosUseCase listarBolsillosUseCase(BolsilloRepository repository) {
         return new ListarBolsillosUseCase(repository);
+    }
+
+    @Bean
+    public ArchivarBolsilloUseCase archivarBolsilloUseCase(BolsilloRepository repository) {
+        return new ArchivarBolsilloUseCase(repository);
     }
 }

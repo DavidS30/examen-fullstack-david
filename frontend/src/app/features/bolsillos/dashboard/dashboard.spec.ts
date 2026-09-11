@@ -9,6 +9,7 @@ import { AbonoRequest, Bolsillo, CrearBolsilloRequest } from '../../../core/mode
 
 type DashboardStoreStub = {
   bolsillos: Signal<Bolsillo[]>;
+  archivadas: Signal<Bolsillo[]>;
   cargando: Signal<boolean>;
   errorCarga: Signal<string | null>;
   metaAlcanzada: Signal<Bolsillo | null>;
@@ -16,6 +17,8 @@ type DashboardStoreStub = {
   detener: () => void;
   crear: (datos: CrearBolsilloRequest) => Observable<Bolsillo>;
   abonar: (id: number, datos: AbonoRequest) => Observable<Bolsillo>;
+  archivar: (id: number) => Observable<Bolsillo>;
+  restaurar: (id: number) => Observable<Bolsillo>;
   cerrarMetaAlcanzada: () => void;
 };
 
@@ -32,6 +35,7 @@ const bolsillo1: Bolsillo = {
   acumulado: 250,
   progreso: 25,
   completado: false,
+  archivado: false,
 };
 
 const bolsillo2: Bolsillo = {
@@ -41,6 +45,7 @@ const bolsillo2: Bolsillo = {
   acumulado: 0,
   progreso: 0,
   completado: false,
+  archivado: false,
 };
 
 const bolsilloCompletado: Bolsillo = {
@@ -50,6 +55,7 @@ const bolsilloCompletado: Bolsillo = {
   acumulado: 1000,
   progreso: 100,
   completado: true,
+  archivado: false,
 };
 
 describe('DashboardPage', () => {
@@ -57,6 +63,7 @@ describe('DashboardPage', () => {
   let fixture: ComponentFixture<DashboardPage>;
   let storeStub: DashboardStoreStub;
   let bolsillosSignal: WritableSignal<Bolsillo[]>;
+  let archivadasSignal: WritableSignal<Bolsillo[]>;
   let cargandoSignal: WritableSignal<boolean>;
   let errorCargaSignal: WritableSignal<string | null>;
   let metaAlcanzadaSignal: WritableSignal<Bolsillo | null>;
@@ -65,6 +72,7 @@ describe('DashboardPage', () => {
 
   beforeEach(async () => {
     bolsillosSignal = signal<Bolsillo[]>([]);
+    archivadasSignal = signal<Bolsillo[]>([]);
     cargandoSignal = signal(false);
     errorCargaSignal = signal<string | null>(null);
     metaAlcanzadaSignal = signal<Bolsillo | null>(null);
@@ -72,6 +80,7 @@ describe('DashboardPage', () => {
 
     storeStub = {
       bolsillos: bolsillosSignal.asReadonly(),
+      archivadas: archivadasSignal.asReadonly(),
       cargando: cargandoSignal.asReadonly(),
       errorCarga: errorCargaSignal.asReadonly(),
       metaAlcanzada: metaAlcanzadaSignal.asReadonly(),
@@ -79,6 +88,8 @@ describe('DashboardPage', () => {
       detener: vi.fn(),
       crear: vi.fn<DashboardStoreStub['crear']>(() => of(bolsillo1)),
       abonar: vi.fn<DashboardStoreStub['abonar']>(() => of(bolsillo1)),
+      archivar: vi.fn<DashboardStoreStub['archivar']>(() => of(bolsillo1)),
+      restaurar: vi.fn<DashboardStoreStub['restaurar']>(() => of(bolsillo1)),
       cerrarMetaAlcanzada: vi.fn(),
     };
 
@@ -211,5 +222,35 @@ describe('DashboardPage', () => {
 
     expect(usuarioStub.guardar).toHaveBeenCalledWith('Ana');
     expect(fixture.nativeElement.querySelector('app-bienvenida-modal')).toBeNull();
+  });
+
+  it('render_conMetasArchivadas_muestraLaSeccion', () => {
+    nombreUsuarioSignal.set('Ana');
+    archivadasSignal.set([{ ...bolsilloCompletado, archivado: true }]);
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('Metas archivadas');
+    expect(el.querySelectorAll('app-archivada-card').length).toBe(1);
+  });
+
+  it('render_sinMetasArchivadas_ocultaLaSeccion', () => {
+    nombreUsuarioSignal.set('Ana');
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).not.toContain('Metas archivadas');
+  });
+
+  it('archivarMeta_llamaAlStoreConElId', () => {
+    component.archivarMeta(1);
+
+    expect(storeStub.archivar).toHaveBeenCalledWith(1);
+  });
+
+  it('restaurarMeta_llamaAlStoreConElId', () => {
+    component.restaurarMeta(2);
+
+    expect(storeStub.restaurar).toHaveBeenCalledWith(2);
   });
 });

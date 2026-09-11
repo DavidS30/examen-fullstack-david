@@ -15,5 +15,5 @@ public interface BolsilloRepository {
 
     Bolsillo save(Bolsillo bolsillo);
 
-    List<Bolsillo> findAll();
+    List<Bolsillo> findByArchivado(boolean archivado);
 }

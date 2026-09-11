@@ -28,8 +28,8 @@ public class JpaBolsilloRepository implements BolsilloRepository {
     }
 
     @Override
-    public List<Bolsillo> findAll() {
-        return jpaRepository.findAll().stream()
+    public List<Bolsillo> findByArchivado(boolean archivado) {
+        return jpaRepository.findByArchivado(archivado).stream()
                 .map(BolsilloMapper::toDomain)
                 .toList();
     }

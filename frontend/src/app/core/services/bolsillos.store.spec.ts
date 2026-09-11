@@ -9,8 +9,11 @@ import { SSE_EVENTOS, SseMensaje } from '../models/sse-events.model';
 
 type BolsillosServiceStub = {
   listar: () => Observable<Bolsillo[]>;
+  listarArchivados: () => Observable<Bolsillo[]>;
   crear: (datos: CrearBolsilloRequest) => Observable<Bolsillo>;
   abonar: (id: number, datos: AbonoRequest) => Observable<Bolsillo>;
+  archivar: (id: number) => Observable<Bolsillo>;
+  restaurar: (id: number) => Observable<Bolsillo>;
 };
 
 type SseServiceStub = {
@@ -24,6 +27,7 @@ const bolsillo1: Bolsillo = {
   acumulado: 250,
   progreso: 25,
   completado: false,
+  archivado: false,
 };
 
 const bolsilloActualizado: Bolsillo = {
@@ -33,6 +37,7 @@ const bolsilloActualizado: Bolsillo = {
   acumulado: 750,
   progreso: 75,
   completado: false,
+  archivado: false,
 };
 
 const bolsilloCompletado: Bolsillo = {
@@ -42,6 +47,7 @@ const bolsilloCompletado: Bolsillo = {
   acumulado: 1000,
   progreso: 100,
   completado: true,
+  archivado: false,
 };
 
 const bolsilloNuevo: Bolsillo = {
@@ -51,27 +57,39 @@ const bolsilloNuevo: Bolsillo = {
   acumulado: 0,
   progreso: 0,
   completado: false,
+  archivado: false,
 };
 
 describe('BolsillosStoreService', () => {
   let store: BolsillosStoreService;
   let listarSubject: Subject<Bolsillo[]>;
+  let listarArchivadosSubject: Subject<Bolsillo[]>;
   let crearSubject: Subject<Bolsillo>;
   let abonarSubject: Subject<Bolsillo>;
+  let archivarSubject: Subject<Bolsillo>;
+  let restaurarSubject: Subject<Bolsillo>;
   let sseSubject: Subject<SseMensaje>;
   let bolsillosServiceStub: BolsillosServiceStub;
   let sseServiceStub: SseServiceStub;
 
   beforeEach(() => {
     listarSubject = new Subject<Bolsillo[]>();
+    listarArchivadosSubject = new Subject<Bolsillo[]>();
     crearSubject = new Subject<Bolsillo>();
     abonarSubject = new Subject<Bolsillo>();
+    archivarSubject = new Subject<Bolsillo>();
+    restaurarSubject = new Subject<Bolsillo>();
     sseSubject = new Subject<SseMensaje>();
 
     bolsillosServiceStub = {
       listar: vi.fn<BolsillosServiceStub['listar']>(() => listarSubject.asObservable()),
+      listarArchivados: vi.fn<BolsillosServiceStub['listarArchivados']>(
+        () => listarArchivadosSubject.asObservable()
+      ),
       crear: vi.fn<BolsillosServiceStub['crear']>(() => crearSubject.asObservable()),
       abonar: vi.fn<BolsillosServiceStub['abonar']>(() => abonarSubject.asObservable()),
+      archivar: vi.fn<BolsillosServiceStub['archivar']>(() => archivarSubject.asObservable()),
+      restaurar: vi.fn<BolsillosServiceStub['restaurar']>(() => restaurarSubject.asObservable()),
     };
     sseServiceStub = {
       conectar: vi.fn<SseServiceStub['conectar']>(() => sseSubject.asObservable()),
@@ -178,5 +196,43 @@ describe('BolsillosStoreService', () => {
 
     abonarSubject.next(bolsilloActualizado);
     expect(recibidos).toEqual([bolsilloActualizado]);
+  });
+
+  it('iniciar_cargaTambienLasMetasArchivadas', () => {
+    store.iniciar();
+
+    expect(bolsillosServiceStub.listarArchivados).toHaveBeenCalledTimes(1);
+
+    listarArchivadosSubject.next([{ ...bolsillo1, archivado: true }]);
+    listarArchivadosSubject.complete();
+
+    expect(store.archivadas().length).toBe(1);
+    expect(store.archivadas()[0].archivado).toBe(true);
+  });
+
+  it('archivar_mueveLaMetaDeActivasAArchivadas', () => {
+    store.iniciar();
+    listarSubject.next([bolsilloCompletado]);
+    listarSubject.complete();
+
+    store.archivar(1).subscribe();
+    archivarSubject.next({ ...bolsilloCompletado, archivado: true });
+
+    expect(bolsillosServiceStub.archivar).toHaveBeenCalledWith(1);
+    expect(store.bolsillos()).toEqual([]);
+    expect(store.archivadas()).toEqual([{ ...bolsilloCompletado, archivado: true }]);
+  });
+
+  it('restaurar_mueveLaMetaDeArchivadasAActivas', () => {
+    store.iniciar();
+    listarArchivadosSubject.next([{ ...bolsilloCompletado, archivado: true }]);
+    listarArchivadosSubject.complete();
+
+    store.restaurar(1).subscribe();
+    restaurarSubject.next(bolsilloCompletado);
+
+    expect(bolsillosServiceStub.restaurar).toHaveBeenCalledWith(1);
+    expect(store.archivadas()).toEqual([]);
+    expect(store.bolsillos()).toEqual([bolsilloCompletado]);
   });
 });

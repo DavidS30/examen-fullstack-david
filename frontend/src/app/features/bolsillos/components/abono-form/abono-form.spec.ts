@@ -91,4 +91,13 @@ describe('AbonoFormComponent', () => {
     ) as HTMLInputElement;
     expect(input.step).toBe('100');
   });
+
+  it('cambioDeMonto_emiteCambioMonto', () => {
+    const spy = vi.fn();
+    component.cambioMonto.subscribe(spy);
+
+    component.form.controls.monto.setValue(500);
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 });

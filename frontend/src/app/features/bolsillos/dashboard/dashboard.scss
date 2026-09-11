@@ -184,6 +184,28 @@
     margin: 0;
     color: var(--color-texto-suave);
   }
+
+  &__archivadas {
+    margin-top: 40px;
+  }
+
+  &__archivadas-titulo {
+    margin: 0;
+    font-family: var(--fuente-display);
+    font-size: 1.3rem;
+  }
+
+  &__archivadas-subtitulo {
+    margin: 4px 0 16px;
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+  }
+
+  &__archivadas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
 }
 
 .crear-form {

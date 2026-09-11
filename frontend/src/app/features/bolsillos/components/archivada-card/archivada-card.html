@@ -1,0 +1,10 @@
+<article class="archivada">
+  <div class="archivada__info">
+    <h3 class="archivada__nombre">{{ bolsillo().nombre }}</h3>
+    <p class="archivada__monto">
+      {{ bolsillo().acumulado | pesos }}
+      <span class="archivada__estado">· 100% completada</span>
+    </p>
+  </div>
+  <button type="button" class="archivada__btn" (click)="restaurar.emit()">Restaurar</button>
+</article>

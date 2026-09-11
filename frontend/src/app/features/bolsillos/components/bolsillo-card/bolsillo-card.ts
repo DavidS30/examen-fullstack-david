@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Bolsillo } from '../../../../core/models/bolsillo.model';
 import { PesosPipe } from '../../../../core/pipes/pesos.pipe';
@@ -21,6 +21,7 @@ export class BolsilloCardComponent {
   readonly bolsillo = input.required<Bolsillo>();
   readonly abonando = signal<boolean>(false);
   readonly errorAbono = signal<string | null>(null);
+  readonly archivar = output<void>();
 
   abonar(monto: number): void {
     this.errorAbono.set(null);
@@ -37,5 +38,9 @@ export class BolsilloCardComponent {
         this.notificaciones.error(mensaje);
       },
     });
+  }
+
+  limpiarErrorAbono(): void {
+    this.errorAbono.set(null);
   }
 }

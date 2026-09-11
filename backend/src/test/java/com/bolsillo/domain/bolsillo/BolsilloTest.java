@@ -1,5 +1,6 @@
 package com.bolsillo.domain.bolsillo;
 
+import com.bolsillo.domain.exception.MetaNoCompletadaException;
 import com.bolsillo.domain.exception.MontoExcedeObjetivoException;
 import com.bolsillo.domain.exception.MontoInvalidoException;
 import com.bolsillo.domain.money.Money;
@@ -96,5 +97,32 @@ class BolsilloTest {
         assertEquals(7L, bolsillo.id());
         assertEquals("Viaje", bolsillo.nombre());
         assertEquals(0, bolsillo.acumulado().valor().compareTo(new BigDecimal("400")));
+        assertFalse(bolsillo.archivado());
+    }
+
+    @Test
+    void archivar_metaCompletada_laArchiva() {
+        Bolsillo bolsillo = Bolsillo.reconstruir(1L, "Vacaciones", OBJETIVO, OBJETIVO);
+
+        bolsillo.archivar();
+
+        assertTrue(bolsillo.archivado());
+    }
+
+    @Test
+    void archivar_metaNoCompletada_lanzaMetaNoCompletadaException() {
+        Bolsillo bolsillo = Bolsillo.reconstruir(1L, "Vacaciones", OBJETIVO, new Money(new BigDecimal("250")));
+
+        assertThrows(MetaNoCompletadaException.class, bolsillo::archivar);
+        assertFalse(bolsillo.archivado());
+    }
+
+    @Test
+    void restaurar_metaArchivada_laDevuelveAlDashboard() {
+        Bolsillo bolsillo = Bolsillo.reconstruir(1L, "Vacaciones", OBJETIVO, OBJETIVO, true);
+
+        bolsillo.restaurar();
+
+        assertFalse(bolsillo.archivado());
     }
 }

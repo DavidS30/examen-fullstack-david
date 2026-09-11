@@ -7,6 +7,7 @@ import { BolsillosStoreService } from '../../../core/services/bolsillos.store';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { extraerMensajeError } from '../../../core/utils/errores';
 import { BienvenidaModalComponent } from '../components/bienvenida-modal/bienvenida-modal';
+import { ArchivadaCardComponent } from '../components/archivada-card/archivada-card';
 import { BolsilloCardComponent } from '../components/bolsillo-card/bolsillo-card';
 import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/meta-alcanzada-modal';
 
@@ -18,6 +19,7 @@ import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/
     ReactiveFormsModule,
     PesosPipe,
     BienvenidaModalComponent,
+    ArchivadaCardComponent,
     BolsilloCardComponent,
     MetaAlcanzadaModalComponent,
   ],
@@ -31,6 +33,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
 
   readonly bolsillos = this.store.bolsillos;
+  readonly archivadas = this.store.archivadas;
   readonly cargando = this.store.cargando;
   readonly errorCarga = this.store.errorCarga;
   readonly metaAlcanzada = this.store.metaAlcanzada;
@@ -95,6 +98,20 @@ export class DashboardPage implements OnInit, OnDestroy {
       },
     });
     this.crearForm.reset({ nombre: '', objetivo: 0 });
+  }
+
+  archivarMeta(id: number): void {
+    this.store.archivar(id).subscribe({
+      next: () => this.notificaciones.exito('Meta archivada'),
+      error: (err: unknown) => this.notificaciones.error(extraerMensajeError(err)),
+    });
+  }
+
+  restaurarMeta(id: number): void {
+    this.store.restaurar(id).subscribe({
+      next: () => this.notificaciones.exito('Meta restaurada'),
+      error: (err: unknown) => this.notificaciones.error(extraerMensajeError(err)),
+    });
   }
 
   cerrarModal(): void {

@@ -5,6 +5,7 @@ export interface Bolsillo {
   acumulado: number;
   progreso: number;
   completado: boolean;
+  archivado: boolean;
 }
 
 export interface CrearBolsilloRequest {

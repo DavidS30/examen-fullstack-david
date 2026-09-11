@@ -37,9 +37,13 @@
     <div class="card__completado-msg">
       ¡Meta alcanzada! 🎉
     </div>
+    <button type="button" class="card__archivar" (click)="archivar.emit()">
+      Archivar meta
+    </button>
   } @else {
     <app-abono-form
       (abonar)="abonar($event)"
+      (cambioMonto)="limpiarErrorAbono()"
       [disabled]="abonando()"
       [errorServidor]="errorAbono()"
     />

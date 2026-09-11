@@ -12,11 +12,13 @@ export class BolsillosStoreService implements OnDestroy {
   private readonly sseService = inject(SseService);
 
   private readonly bolsillosSignal = signal<Bolsillo[]>([]);
+  private readonly archivadasSignal = signal<Bolsillo[]>([]);
   private readonly metaAlcanzadaSignal = signal<Bolsillo | null>(null);
   private readonly cargandoSignal = signal<boolean>(false);
   private readonly errorCargaSignal = signal<string | null>(null);
 
   readonly bolsillos = this.bolsillosSignal.asReadonly();
+  readonly archivadas = this.archivadasSignal.asReadonly();
   readonly metaAlcanzada = this.metaAlcanzadaSignal.asReadonly();
   readonly cargando = this.cargandoSignal.asReadonly();
   readonly errorCarga = this.errorCargaSignal.asReadonly();
@@ -25,6 +27,7 @@ export class BolsillosStoreService implements OnDestroy {
 
   iniciar(): void {
     this.cargar();
+    this.cargarArchivadas();
     if (this.sseSubscription === null) {
       this.sseSubscription = this.sseService.conectar().subscribe({
         next: (mensaje) => this.manejarSse(mensaje),
@@ -67,6 +70,31 @@ export class BolsillosStoreService implements OnDestroy {
   abonar(id: number, datos: AbonoRequest): Observable<Bolsillo> {
     return this.bolsillosService.abonar(id, datos).pipe(
       tap((bolsillo) => this.actualizarBolsillo(bolsillo))
+    );
+  }
+
+  cargarArchivadas(): void {
+    this.bolsillosService.listarArchivados().subscribe({
+      next: (archivadas) => this.archivadasSignal.set(archivadas),
+      error: () => {},
+    });
+  }
+
+  archivar(id: number): Observable<Bolsillo> {
+    return this.bolsillosService.archivar(id).pipe(
+      tap((bolsillo) => {
+        this.bolsillosSignal.update((lista) => lista.filter((item) => item.id !== bolsillo.id));
+        this.archivadasSignal.update((lista) => [...lista, bolsillo]);
+      })
+    );
+  }
+
+  restaurar(id: number): Observable<Bolsillo> {
+    return this.bolsillosService.restaurar(id).pipe(
+      tap((bolsillo) => {
+        this.archivadasSignal.update((lista) => lista.filter((item) => item.id !== bolsillo.id));
+        this.bolsillosSignal.update((lista) => [...lista, bolsillo]);
+      })
     );
   }
 

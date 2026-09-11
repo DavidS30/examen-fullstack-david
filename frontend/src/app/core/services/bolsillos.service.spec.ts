@@ -16,6 +16,7 @@ const bolsilloBase: Bolsillo = {
   acumulado: 250,
   progreso: 25,
   completado: false,
+  archivado: false,
 };
 
 describe('BolsillosService', () => {
@@ -73,5 +74,39 @@ describe('BolsillosService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(datos);
     req.flush(actualizado);
+  });
+
+  it('listarArchivados_llamadaHttpGet_devuelveSoloArchivadas', () => {
+    const archivadas: Bolsillo[] = [{ ...bolsilloBase, archivado: true }];
+
+    service.listarArchivados().subscribe((lista) => {
+      expect(lista).toEqual(archivadas);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/bolsillos/archivados`);
+    expect(req.request.method).toBe('GET');
+    req.flush(archivadas);
+  });
+
+  it('archivar_enviaPatchAlEndpointDeArchivar_devuelveBolsilloArchivado', () => {
+    const archivada: Bolsillo = { ...bolsilloBase, archivado: true };
+
+    service.archivar(1).subscribe((bolsillo) => {
+      expect(bolsillo).toEqual(archivada);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/bolsillos/1/archivar`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush(archivada);
+  });
+
+  it('restaurar_enviaPatchAlEndpointDeRestaurar_devuelveBolsilloActivo', () => {
+    service.restaurar(1).subscribe((bolsillo) => {
+      expect(bolsillo).toEqual(bolsilloBase);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/bolsillos/1/restaurar`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush(bolsilloBase);
   });
 });

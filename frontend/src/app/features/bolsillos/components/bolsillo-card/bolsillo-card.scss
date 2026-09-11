@@ -111,6 +111,22 @@
     border: 1px solid #bbf7d0;
     border-radius: 10px;
   }
+
+  &__archivar {
+    padding: 10px 16px;
+    min-height: 44px;
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    background: var(--color-superficie);
+    color: var(--color-texto-suave);
+    font-weight: 600;
+    transition: border-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      border-color: var(--color-primario);
+      color: var(--color-primario-oscuro);
+    }
+  }
 }
 
 @keyframes entrar {

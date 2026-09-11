@@ -1,6 +1,7 @@
 package com.bolsillo.infrastructure.web;
 
 import com.bolsillo.application.exception.BolsilloNoEncontradoException;
+import com.bolsillo.domain.exception.MetaNoCompletadaException;
 import com.bolsillo.domain.exception.MontoExcedeObjetivoException;
 import com.bolsillo.domain.exception.MontoInvalidoException;
 import com.bolsillo.infrastructure.web.dto.ErrorResponse;
@@ -30,6 +31,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BolsilloNoEncontradoException.class)
     public ResponseEntity<ErrorResponse> handleNoEncontrado(BolsilloNoEncontradoException ex) {
         return buildError(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(MetaNoCompletadaException.class)
+    public ResponseEntity<ErrorResponse> handleMetaNoCompletada(MetaNoCompletadaException ex) {
+        return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

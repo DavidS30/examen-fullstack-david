@@ -22,14 +22,17 @@ public class BolsilloEntity {
 
     private BigDecimal acumulado;
 
+    private boolean archivado;
+
     protected BolsilloEntity() {
     }
 
-    public BolsilloEntity(Long id, String nombre, BigDecimal objetivo, BigDecimal acumulado) {
+    public BolsilloEntity(Long id, String nombre, BigDecimal objetivo, BigDecimal acumulado, boolean archivado) {
         this.id = id;
         this.nombre = nombre;
         this.objetivo = objetivo;
         this.acumulado = acumulado;
+        this.archivado = archivado;
     }
 
     public Long getId() {
@@ -48,6 +51,10 @@ public class BolsilloEntity {
         return acumulado;
     }
 
+    public boolean isArchivado() {
+        return archivado;
+    }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -58,5 +65,9 @@ public class BolsilloEntity {
 
     public void setAcumulado(BigDecimal acumulado) {
         this.acumulado = acumulado;
+    }
+
+    public void setArchivado(boolean archivado) {
+        this.archivado = archivado;
     }
 }

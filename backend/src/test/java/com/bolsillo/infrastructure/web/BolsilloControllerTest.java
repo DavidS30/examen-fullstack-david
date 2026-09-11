@@ -1,10 +1,12 @@
 package com.bolsillo.infrastructure.web;
 
 import com.bolsillo.application.exception.BolsilloNoEncontradoException;
+import com.bolsillo.application.usecase.ArchivarBolsilloUseCase;
 import com.bolsillo.application.usecase.CrearBolsilloUseCase;
 import com.bolsillo.application.usecase.ListarBolsillosUseCase;
 import com.bolsillo.application.usecase.RegistrarAbonoUseCase;
 import com.bolsillo.domain.bolsillo.Bolsillo;
+import com.bolsillo.domain.exception.MetaNoCompletadaException;
 import com.bolsillo.domain.exception.MontoExcedeObjetivoException;
 import com.bolsillo.domain.exception.MontoInvalidoException;
 import com.bolsillo.domain.money.Money;
@@ -23,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +46,9 @@ class BolsilloControllerTest {
     private RegistrarAbonoUseCase registrarAbonoUseCase;
 
     @MockBean
+    private ArchivarBolsilloUseCase archivarBolsilloUseCase;
+
+    @MockBean
     private SseEmitterRegistry sseEmitterRegistry;
 
     private static Bolsillo bolsilloParcial() {
@@ -51,6 +57,10 @@ class BolsilloControllerTest {
 
     private static Bolsillo bolsilloCompleto() {
         return Bolsillo.reconstruir(1L, "Vacaciones", new Money(new BigDecimal("1000")), new Money(new BigDecimal("1000")));
+    }
+
+    private static Bolsillo bolsilloCompletoArchivado() {
+        return Bolsillo.reconstruir(1L, "Vacaciones", new Money(new BigDecimal("1000")), new Money(new BigDecimal("1000")), true);
     }
 
     @Test
@@ -212,5 +222,43 @@ class BolsilloControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"monto\":100}"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void archivar_metaCompletada_retorna200ConArchivadoTrue() throws Exception {
+        when(archivarBolsilloUseCase.archivar(1L)).thenReturn(bolsilloCompletoArchivado());
+
+        mockMvc.perform(patch("/api/bolsillos/1/archivar"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.archivado").value(true))
+                .andExpect(jsonPath("$.completado").value(true));
+    }
+
+    @Test
+    void archivar_metaNoCompletada_retorna400() throws Exception {
+        when(archivarBolsilloUseCase.archivar(1L))
+                .thenThrow(new MetaNoCompletadaException("Solo se pueden archivar metas completadas"));
+
+        mockMvc.perform(patch("/api/bolsillos/1/archivar"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void restaurar_metaArchivada_retorna200ConArchivadoFalse() throws Exception {
+        when(archivarBolsilloUseCase.restaurar(1L)).thenReturn(bolsilloCompleto());
+
+        mockMvc.perform(patch("/api/bolsillos/1/restaurar"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.archivado").value(false));
+    }
+
+    @Test
+    void listarArchivados_conDatos_retornaListaDeArchivadas() throws Exception {
+        when(listarBolsillosUseCase.listarArchivados()).thenReturn(List.of(bolsilloCompletoArchivado()));
+
+        mockMvc.perform(get("/api/bolsillos/archivados"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].archivado").value(true))
+                .andExpect(jsonPath("$[0].nombre").value("Vacaciones"));
     }
 }

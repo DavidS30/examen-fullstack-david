@@ -114,3 +114,17 @@ Aplicada tras instalar las skills de `frontend-design` y `accessibility`:
   un formato estable.
 - **Tests**: +12 (pesos.pipe, notificacion.service, notificaciones.component y casos de
   toast/error inline en card y abono-form). Total frontend: 65 en verde.
+
+## 7. Iteración: archivar metas alcanzadas y fix del error persistente
+
+- **Archivado de metas completadas** (backend + frontend): campo `archivado` en el dominio,
+  `ArchivarBolsilloUseCase` (archivar/restaurar) con la regla de que solo se archivan metas
+  al 100% (`MetaNoCompletadaException` → 400), endpoints `PATCH .../archivar` y
+  `PATCH .../restaurar`, y `GET /api/bolsillos/archivados`. En la UI, la tarjeta completada
+  gana el botón "Archivar meta" y aparece una sección "Metas archivadas" al final del
+  dashboard con botón "Restaurar".
+- **Fix de UX**: el error del servidor del formulario de abono ahora se limpia en cuanto el
+  usuario edita el monto (output `cambioMonto` + `valueChanges`), sin esperar a un abono
+  exitoso.
+- **Tests**: backend 63 (dominio, caso de uso, controller) y frontend 78 (service, store,
+  dashboard, card, abono-form). Todos en verde.

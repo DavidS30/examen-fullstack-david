@@ -1,5 +1,6 @@
 package com.bolsillo.infrastructure.web;
 
+import com.bolsillo.application.usecase.ArchivarBolsilloUseCase;
 import com.bolsillo.application.usecase.CrearBolsilloUseCase;
 import com.bolsillo.application.usecase.ListarBolsillosUseCase;
 import com.bolsillo.application.usecase.RegistrarAbonoUseCase;
@@ -11,6 +12,7 @@ import com.bolsillo.infrastructure.web.dto.CrearBolsilloRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,20 +29,30 @@ public class BolsilloController {
     private final CrearBolsilloUseCase crearBolsilloUseCase;
     private final ListarBolsillosUseCase listarBolsillosUseCase;
     private final RegistrarAbonoUseCase registrarAbonoUseCase;
+    private final ArchivarBolsilloUseCase archivarBolsilloUseCase;
 
     public BolsilloController(
             CrearBolsilloUseCase crearBolsilloUseCase,
             ListarBolsillosUseCase listarBolsillosUseCase,
-            RegistrarAbonoUseCase registrarAbonoUseCase
+            RegistrarAbonoUseCase registrarAbonoUseCase,
+            ArchivarBolsilloUseCase archivarBolsilloUseCase
     ) {
         this.crearBolsilloUseCase = crearBolsilloUseCase;
         this.listarBolsillosUseCase = listarBolsillosUseCase;
         this.registrarAbonoUseCase = registrarAbonoUseCase;
+        this.archivarBolsilloUseCase = archivarBolsilloUseCase;
     }
 
     @GetMapping
     public List<BolsilloResponse> listar() {
         return listarBolsillosUseCase.listar().stream()
+                .map(BolsilloResponse::from)
+                .toList();
+    }
+
+    @GetMapping("/archivados")
+    public List<BolsilloResponse> listarArchivados() {
+        return listarBolsillosUseCase.listarArchivados().stream()
                 .map(BolsilloResponse::from)
                 .toList();
     }
@@ -56,5 +68,15 @@ public class BolsilloController {
     public BolsilloResponse abonar(@PathVariable Long id, @Valid @RequestBody AbonoRequest request) {
         Bolsillo bolsillo = registrarAbonoUseCase.registrarAbono(id, new Money(request.monto()));
         return BolsilloResponse.from(bolsillo);
+    }
+
+    @PatchMapping("/{id}/archivar")
+    public BolsilloResponse archivar(@PathVariable Long id) {
+        return BolsilloResponse.from(archivarBolsilloUseCase.archivar(id));
+    }
+
+    @PatchMapping("/{id}/restaurar")
+    public BolsilloResponse restaurar(@PathVariable Long id) {
+        return BolsilloResponse.from(archivarBolsilloUseCase.restaurar(id));
     }
 }

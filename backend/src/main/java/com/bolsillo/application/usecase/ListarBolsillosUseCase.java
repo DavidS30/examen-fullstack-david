@@ -14,6 +14,10 @@ public class ListarBolsillosUseCase {
     }
 
     public List<Bolsillo> listar() {
-        return repository.findAll();
+        return repository.findByArchivado(false);
+    }
+
+    public List<Bolsillo> listarArchivados() {
+        return repository.findByArchivado(true);
     }
 }

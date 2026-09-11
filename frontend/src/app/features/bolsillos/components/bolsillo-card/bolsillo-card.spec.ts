@@ -23,6 +23,7 @@ const bolsillo: Bolsillo = {
   acumulado: 250,
   progreso: 25,
   completado: false,
+  archivado: false,
 };
 
 describe('BolsilloCardComponent', () => {
@@ -107,11 +108,56 @@ describe('BolsilloCardComponent', () => {
       acumulado: 1000,
       progreso: 100,
       completado: true,
+      archivado: false,
     });
     fixture.detectChanges();
 
     const el = fixture.nativeElement as HTMLElement;
     expect(el.textContent).toContain('¡Meta alcanzada!');
     expect(el.querySelector('app-abono-form')).toBeNull();
+  });
+
+  it('alEditarElMonto_seLimpiaElErrorDelServidor', () => {
+    abonarMock.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            error: { message: 'El monto excede el objetivo' },
+            status: 400,
+            statusText: 'Bad Request',
+          })
+      )
+    );
+    component.abonar(500);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.abono-form__error')).not.toBeNull();
+
+    const input = fixture.nativeElement.querySelector(
+      'input[formControlName="monto"]'
+    ) as HTMLInputElement;
+    input.value = '700';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.abono-form__error')).toBeNull();
+  });
+
+  it('archivar_conClicEnElBoton_emiteElEvento', () => {
+    fixture.componentRef.setInput('bolsillo', {
+      ...bolsillo,
+      acumulado: 1000,
+      progreso: 100,
+      completado: true,
+      archivado: false,
+    });
+    fixture.detectChanges();
+
+    const spy = vi.fn();
+    component.archivar.subscribe(spy);
+
+    const btn = fixture.nativeElement.querySelector('.card__archivar') as HTMLButtonElement;
+    btn.click();
+
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });

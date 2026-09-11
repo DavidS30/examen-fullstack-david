@@ -39,13 +39,13 @@ class CrearBolsilloUseCaseTest {
     void crear_objetivoCero_lanzaMontoInvalidoExceptionYNoPersiste() {
         assertThrows(MontoInvalidoException.class,
                 () -> useCase.crear("Vacaciones", new Money(BigDecimal.ZERO)));
-        assertTrue(repository.findAll().isEmpty());
+        assertTrue(repository.findByArchivado(false).isEmpty());
     }
 
     @Test
     void crear_objetivoNegativo_lanzaMontoInvalidoExceptionYNoPersiste() {
         assertThrows(MontoInvalidoException.class,
                 () -> useCase.crear("Vacaciones", new Money(new BigDecimal("-100"))));
-        assertTrue(repository.findAll().isEmpty());
+        assertTrue(repository.findByArchivado(false).isEmpty());
     }
 }

@@ -10,7 +10,8 @@ public record BolsilloResponse(
         BigDecimal objetivo,
         BigDecimal acumulado,
         int progreso,
-        boolean completado
+        boolean completado,
+        boolean archivado
 ) {
 
     public static BolsilloResponse from(Bolsillo bolsillo) {
@@ -20,7 +21,8 @@ public record BolsilloResponse(
                 bolsillo.objetivo().valor(),
                 bolsillo.acumulado().valor(),
                 bolsillo.progreso(),
-                bolsillo.estaCompleto()
+                bolsillo.estaCompleto(),
+                bolsillo.archivado()
         );
     }
 }

@@ -1,0 +1,44 @@
+.archivada {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgb(255 255 255 / 0.6);
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+
+  &__nombre {
+    margin: 0;
+    font-family: var(--fuente-display);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  &__monto {
+    margin: 2px 0 0;
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+  }
+
+  &__estado {
+    color: var(--color-exito);
+  }
+
+  &__btn {
+    padding: 8px 16px;
+    min-height: 44px;
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    background: var(--color-superficie);
+    color: var(--color-primario-oscuro);
+    font-weight: 600;
+    white-space: nowrap;
+    transition: border-color 0.15s ease, background 0.15s ease;
+
+    &:hover {
+      border-color: var(--color-primario);
+      background: #f0fdfa;
+    }
+  }
+}

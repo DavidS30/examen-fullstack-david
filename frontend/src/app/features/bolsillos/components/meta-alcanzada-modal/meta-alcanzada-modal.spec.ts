@@ -10,6 +10,7 @@ const bolsilloCompletado: Bolsillo = {
   acumulado: 1000,
   progreso: 100,
   completado: true,
+  archivado: false,
 };
 
 describe('MetaAlcanzadaModalComponent', () => {

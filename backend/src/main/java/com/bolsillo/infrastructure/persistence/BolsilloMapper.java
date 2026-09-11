@@ -13,7 +13,8 @@ public final class BolsilloMapper {
                 entity.getId(),
                 entity.getNombre(),
                 new Money(entity.getObjetivo()),
-                new Money(entity.getAcumulado())
+                new Money(entity.getAcumulado()),
+                entity.isArchivado()
         );
     }
 
@@ -22,7 +23,8 @@ public final class BolsilloMapper {
                 bolsillo.id(),
                 bolsillo.nombre(),
                 bolsillo.objetivo().valor(),
-                bolsillo.acumulado().valor()
+                bolsillo.acumulado().valor(),
+                bolsillo.archivado()
         );
     }
 }

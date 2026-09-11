@@ -13,11 +13,23 @@ export class BolsillosService {
     return this.http.get<Bolsillo[]>(this.apiUrl);
   }
 
+  listarArchivados(): Observable<Bolsillo[]> {
+    return this.http.get<Bolsillo[]>(`${this.apiUrl}/archivados`);
+  }
+
   crear(datos: CrearBolsilloRequest): Observable<Bolsillo> {
     return this.http.post<Bolsillo>(this.apiUrl, datos);
   }
 
   abonar(id: number, datos: AbonoRequest): Observable<Bolsillo> {
     return this.http.post<Bolsillo>(`${this.apiUrl}/${id}/abonos`, datos);
+  }
+
+  archivar(id: number): Observable<Bolsillo> {
+    return this.http.patch<Bolsillo>(`${this.apiUrl}/${id}/archivar`, null);
+  }
+
+  restaurar(id: number): Observable<Bolsillo> {
+    return this.http.patch<Bolsillo>(`${this.apiUrl}/${id}/restaurar`, null);
   }
 }

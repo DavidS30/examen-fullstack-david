@@ -98,11 +98,29 @@
           <app-bolsillo-card
             [bolsillo]="bolsillo"
             [style.animation-delay]="(i * 60) + 'ms'"
+            (archivar)="archivarMeta(bolsillo.id)"
           />
         }
       </div>
     }
   </section>
+
+  @if (archivadas().length > 0) {
+    <section class="dashboard__archivadas" aria-label="Metas archivadas">
+      <h2 class="dashboard__archivadas-titulo">Metas archivadas</h2>
+      <p class="dashboard__archivadas-subtitulo">
+        Metas que ya completaste y archivas para mantener el dashboard enfocado en lo que sigue.
+      </p>
+      <div class="dashboard__archivadas-grid">
+        @for (archivada of archivadas(); track archivada.id) {
+          <app-archivada-card
+            [bolsillo]="archivada"
+            (restaurar)="restaurarMeta(archivada.id)"
+          />
+        }
+      </div>
+    </section>
+  }
 
   @if (mostrarBienvenida()) {
     <app-bienvenida-modal

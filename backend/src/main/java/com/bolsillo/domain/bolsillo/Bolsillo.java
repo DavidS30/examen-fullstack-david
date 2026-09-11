@@ -1,5 +1,6 @@
 package com.bolsillo.domain.bolsillo;
 
+import com.bolsillo.domain.exception.MetaNoCompletadaException;
 import com.bolsillo.domain.exception.MontoExcedeObjetivoException;
 import com.bolsillo.domain.exception.MontoInvalidoException;
 import com.bolsillo.domain.money.Money;
@@ -9,7 +10,7 @@ import java.math.RoundingMode;
 
 /**
  * Entidad raíz del agregado Bolsillo. Contiene las reglas de negocio puras:
- * monto > 0, no exceder el objetivo, completitud al 100%.
+ * monto > 0, no exceder el objetivo, completitud al 100% y archivado de metas completadas.
  */
 public final class Bolsillo {
 
@@ -17,23 +18,35 @@ public final class Bolsillo {
     private final String nombre;
     private final Money objetivo;
     private Money acumulado;
+    private boolean archivado;
 
-    private Bolsillo(Long id, String nombre, Money objetivo, Money acumulado) {
+    private Bolsillo(Long id, String nombre, Money objetivo, Money acumulado, boolean archivado) {
         this.id = id;
         this.nombre = nombre;
         this.objetivo = objetivo;
         this.acumulado = acumulado;
+        this.archivado = archivado;
     }
 
     public static Bolsillo crear(Long id, String nombre, Money objetivo) {
         if (objetivo.valor().signum() <= 0) {
             throw new MontoInvalidoException("El monto objetivo debe ser mayor a cero");
         }
-        return new Bolsillo(id, nombre, objetivo, Money.cero());
+        return new Bolsillo(id, nombre, objetivo, Money.cero(), false);
     }
 
     public static Bolsillo reconstruir(Long id, String nombre, Money objetivo, Money acumulado) {
-        return new Bolsillo(id, nombre, objetivo, acumulado);
+        return reconstruir(id, nombre, objetivo, acumulado, false);
+    }
+
+    public static Bolsillo reconstruir(
+            Long id,
+            String nombre,
+            Money objetivo,
+            Money acumulado,
+            boolean archivado
+    ) {
+        return new Bolsillo(id, nombre, objetivo, acumulado, archivado);
     }
 
     public void abonar(Money monto) {
@@ -47,6 +60,20 @@ public final class Bolsillo {
             );
         }
         acumulado = nuevoAcumulado;
+    }
+
+    public void archivar() {
+        if (!estaCompleto()) {
+            throw new MetaNoCompletadaException(
+                    "Solo se pueden archivar metas completadas ('" + nombre + "' está al "
+                            + progreso() + "%)"
+            );
+        }
+        archivado = true;
+    }
+
+    public void restaurar() {
+        archivado = false;
     }
 
     public boolean estaCompleto() {
@@ -74,5 +101,9 @@ public final class Bolsillo {
 
     public Money acumulado() {
         return acumulado;
+    }
+
+    public boolean archivado() {
+        return archivado;
     }
 }

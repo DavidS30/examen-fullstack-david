@@ -37,4 +37,27 @@ class ListarBolsillosUseCaseTest {
     void listar_sinBolsillos_retornaListaVacia() {
         assertTrue(useCase.listar().isEmpty());
     }
+
+    @Test
+    void listar_conBolsillosArchivados_retornaSoloLasActivas() {
+        Bolsillo completada = repository.save(Bolsillo.crear(null, "Vacaciones", new Money(new BigDecimal("1000"))));
+        completada.abonar(new Money(new BigDecimal("1000")));
+        repository.save(completada).archivar();
+
+        List<Bolsillo> resultado = useCase.listar();
+
+        assertTrue(resultado.isEmpty());
+    }
+
+    @Test
+    void listarArchivados_conMetasArchivadas_retornaSoloArchivadas() {
+        Bolsillo completada = repository.save(Bolsillo.crear(null, "Vacaciones", new Money(new BigDecimal("1000"))));
+        completada.abonar(new Money(new BigDecimal("1000")));
+        repository.save(completada).archivar();
+
+        List<Bolsillo> resultado = useCase.listarArchivados();
+
+        assertEquals(1, resultado.size());
+        assertTrue(resultado.get(0).archivado());
+    }
 }
