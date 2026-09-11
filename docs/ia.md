@@ -46,8 +46,8 @@
 ### Escrito / refactorizado a mano
 - Diagnóstico del PDF (la extracción con PyPDF2 era ilegible por codificación de fuente;
   se resolvió con pdfminer.six) y traducción de los requisitos del enunciado a AGENTS.md.
-- Decisión de NO reutilizar login/JWT ni PostgreSQL (alcance
-  cerrado del enunciado), documentada en docs/arquitectura.md.
+- Decisión de NO incluir autenticación: el enunciado no la pide y el alcance es cerrado,
+  documentada en docs/arquitectura.md.
 - **Refactor del frontend tras la auditoría**: `AbonoFormComponent` dejó de recibir el error
   por un `viewChild` imperativo y pasó a recibirlo como input declarativo; el store ahora
   aplica la respuesta HTTP del abono como fallback idempotente ante caídas de SSE.
