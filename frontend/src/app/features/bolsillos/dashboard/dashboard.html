@@ -1,8 +1,12 @@
-<main class="dashboard">
+<main id="contenido" class="dashboard">
   <header class="dashboard__header">
-    <div>
-      <h1 class="dashboard__titulo">Bolsillo de Ahorro Programado</h1>
-      <p class="dashboard__subtitulo">Crea metas, abona y observa tu progreso en tiempo real.</p>
+    <div class="dashboard__marca">
+      <span class="dashboard__logo" aria-hidden="true">🪙</span>
+      <div>
+        <p class="dashboard__eyebrow">Ahorro programado</p>
+        <h1 class="dashboard__titulo">Mis bolsillos</h1>
+        <p class="dashboard__subtitulo">Crea una meta, abona y mira tu progreso en tiempo real.</p>
+      </div>
     </div>
     <span class="dashboard__live">
       <span class="dashboard__live-dot"></span>
@@ -10,22 +14,39 @@
     </span>
   </header>
 
-  <section class="dashboard__crear">
+  <section class="dashboard__stats" aria-label="Resumen de ahorro">
+    <div class="dashboard__stat">
+      <span class="dashboard__stat-label">Total ahorrado</span>
+      <span class="dashboard__stat-valor">$ {{ totalAhorrado() | number }}</span>
+    </div>
+    <div class="dashboard__stat">
+      <span class="dashboard__stat-label">Metas completadas</span>
+      <span class="dashboard__stat-valor">{{ metasCompletadas() }} / {{ bolsillos().length }}</span>
+    </div>
+  </section>
+
+  <section class="dashboard__crear" aria-label="Crear nueva meta">
     <form [formGroup]="crearForm" (ngSubmit)="crearBolsillo()" class="crear-form">
-      <input
-        type="text"
-        formControlName="nombre"
-        placeholder="Nombre de la meta (ej. Viaje a Cartagena)"
-        aria-label="Nombre de la meta"
-      />
-      <input
-        type="number"
-        min="1"
-        step="0.01"
-        formControlName="objetivo"
-        placeholder="Monto objetivo"
-        aria-label="Monto objetivo"
-      />
+      <div class="crear-form__campo">
+        <label class="visually-hidden" for="crear-nombre">Nombre de la meta</label>
+        <input
+          id="crear-nombre"
+          type="text"
+          formControlName="nombre"
+          placeholder="Nombre de la meta (ej. Viaje a Cartagena)"
+        />
+      </div>
+      <div class="crear-form__campo">
+        <label class="visually-hidden" for="crear-objetivo">Monto objetivo</label>
+        <input
+          id="crear-objetivo"
+          type="number"
+          min="1"
+          step="0.01"
+          formControlName="objetivo"
+          placeholder="Monto objetivo"
+        />
+      </div>
       <button type="submit" [disabled]="crearForm.invalid" class="crear-form__btn">
         Crear meta
       </button>
@@ -35,19 +56,24 @@
     }
   </section>
 
-  <section class="dashboard__lista">
+  <section class="dashboard__lista" aria-label="Listado de metas">
     @if (cargando()) {
       <p class="dashboard__estado">Cargando metas…</p>
     } @else if (errorCarga(); as error) {
       <p class="dashboard__error" role="alert">No pudimos cargar tus metas: {{ error }}</p>
     } @else if (bolsillos().length === 0) {
-      <p class="dashboard__estado">
-        Aún no tienes metas. Crea la primera con el formulario de arriba.
-      </p>
+      <div class="dashboard__vacio">
+        <span class="dashboard__vacio-icono" aria-hidden="true">🌱</span>
+        <h2 class="dashboard__vacio-titulo">Aún no tienes metas</h2>
+        <p class="dashboard__vacio-texto">Crea la primera con el formulario de arriba y empieza a ahorrar.</p>
+      </div>
     } @else {
       <div class="dashboard__grid">
-        @for (bolsillo of bolsillos(); track bolsillo.id) {
-          <app-bolsillo-card [bolsillo]="bolsillo" />
+        @for (bolsillo of bolsillos(); track bolsillo.id; let i = $index) {
+          <app-bolsillo-card
+            [bolsillo]="bolsillo"
+            [style.animation-delay]="(i * 60) + 'ms'"
+          />
         }
       </div>
     }

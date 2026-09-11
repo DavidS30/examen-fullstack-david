@@ -11,6 +11,15 @@
 - Automatiza una tarea repetitiva (escribir specs con los mismos casos borde) y garantiza
   cobertura consistente del flujo crítico.
 
+### Skills de terceros instaladas con `autoskills`
+- `.agents/skills/frontend-design` — dirección estética para el rediseño visual
+  (tipografía display, paleta con acento, motion, composición).
+- `.agents/skills/accessibility` — auditoría WCAG 2.2 aplicada (skip link, labels,
+  `aria-invalid`, focus-visible, `prefers-reduced-motion`, `<dialog>` con focus trap).
+- `.agents/skills/seo`, `angular-developer`, `reference-signal-forms`, `vitest`,
+  `typescript-advanced-types` y skills de backend (`java-springboot`, `java-docs`,
+  `java-coding-standards`) — disponibles como referencia, no todas usadas aún.
+
 ## 2. Agents / Sub-agentes configurados
 
 | Agente         | Rol                                                    | Permisos     |
@@ -58,3 +67,20 @@
    la respuesta HTTP del abono y la UI dependía 100% del evento SSE. Lo modifiqué para aplicar
    `tap(actualizarBolsillo)` como fallback: si la conexión SSE cae y reconecta (EventSource
    pierde eventos del gap), la UI no queda desactualizada.
+
+## 4. Iteración de mejoras visuales y accesibilidad
+
+Aplicada tras instalar las skills de `frontend-design` y `accessibility`:
+
+- **Rediseño visual** (guiado por `frontend-design`): tipografía display `Fraunces` +
+  cuerpo `DM Sans`, paleta esmeralda con acento ámbar, fondo con gradientes radiales,
+  header con logo y stats (total ahorrado / metas completadas), stagger reveal al cargar,
+  hover en tarjetas, barra de progreso con glow, empty state ilustrado y modal de confeti
+  con partículas CSS.
+- **Accesibilidad** (guiado por `accessibility`): skip link, `<label>` asociados a todos los
+  inputs, `aria-invalid` en campos inválidos, `aria-label` en el progressbar y estado,
+  `focus-visible` global, targets ≥ 44px, `prefers-reduced-motion`, y el modal migrado de un
+  `div` a `<dialog>` nativo (focus trap + `Escape` + cierre por backdrop automáticos).
+- **Ajuste por test**: jsdom v28 no implementa `showModal()`/`close()`; se añadió un fallback
+  defensivo (`setAttribute('open')` / emit directo) que conserva el comportamiento nativo en
+  navegadores reales. 39/39 tests siguen en verde.

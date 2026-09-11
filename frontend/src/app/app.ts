@@ -5,7 +5,10 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet],
-  template: `<router-outlet />`,
+  template: `
+    <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+    <router-outlet />
+  `,
   styles: `
     :host {
       display: block;

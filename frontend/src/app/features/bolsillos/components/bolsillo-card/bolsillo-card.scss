@@ -1,15 +1,30 @@
+:host {
+  display: block;
+  animation: entrar 0.5s ease both;
+}
+
 .card {
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio);
-  padding: 20px;
+  padding: 22px;
   box-shadow: var(--sombra-suave);
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-media);
+  }
 
   &--completado {
-    border-color: var(--color-exito);
+    border-color: #86efac;
+
+    &:hover {
+      box-shadow: 0 14px 34px rgb(22 163 74 / 0.18);
+    }
   }
 
   &__header {
@@ -21,13 +36,15 @@
 
   &__nombre {
     margin: 0;
-    font-size: 1.05rem;
+    font-family: var(--fuente-display);
+    font-size: 1.15rem;
+    font-weight: 600;
   }
 
   &__estado {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     color: var(--color-texto-suave);
 
     &--ok {
@@ -43,8 +60,10 @@
   }
 
   &__monto-actual {
-    font-size: 1.4rem;
+    font-family: var(--fuente-display);
+    font-size: 1.6rem;
     font-weight: 700;
+    color: var(--color-primario-profundo);
   }
 
   &__monto-objetivo {
@@ -52,32 +71,55 @@
   }
 
   &__barra {
-    height: 10px;
-    background: var(--color-borde);
+    height: 12px;
+    background: #e9efea;
     border-radius: 999px;
     overflow: hidden;
   }
 
   &__barra-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--color-primario), var(--color-exito));
     border-radius: 999px;
-    transition: width 0.4s ease;
+    background: linear-gradient(90deg, var(--color-primario), var(--color-exito));
+    box-shadow: 0 0 12px rgb(13 148 136 / 0.55);
+    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &__progreso-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: -4px;
   }
 
   &__progreso {
-    margin: -6px 0 0;
-    text-align: right;
-    font-weight: 500;
+    font-weight: 700;
+    color: var(--color-primario-oscuro);
+  }
+
+  &__restante {
     color: var(--color-texto-suave);
+    font-size: 0.85rem;
   }
 
   &__completado-msg {
     text-align: center;
     font-weight: 600;
     color: var(--color-exito);
-    padding: 10px;
-    background: #f0fdf4;
-    border-radius: 8px;
+    padding: 12px;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+  }
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

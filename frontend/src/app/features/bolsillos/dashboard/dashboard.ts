@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BolsillosStoreService } from '../../../core/services/bolsillos.store';
@@ -26,6 +26,13 @@ export class DashboardPage implements OnInit, OnDestroy {
   readonly cargando = this.store.cargando;
   readonly errorCarga = this.store.errorCarga;
   readonly metaAlcanzada = this.store.metaAlcanzada;
+
+  readonly totalAhorrado = computed(() =>
+    this.bolsillos().reduce((total, bolsillo) => total + bolsillo.acumulado, 0)
+  );
+  readonly metasCompletadas = computed(
+    () => this.bolsillos().filter((bolsillo) => bolsillo.completado).length
+  );
 
   readonly errorCrear = signal<string | null>(null);
 

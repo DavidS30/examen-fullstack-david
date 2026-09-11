@@ -10,7 +10,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './abono-form.scss',
 })
 export class AbonoFormComponent {
+  private static contador = 0;
   private readonly fb = inject(FormBuilder);
+
+  readonly campoId = `monto-abono-${++AbonoFormComponent.contador}`;
 
   readonly disabled = input<boolean>(false);
   readonly errorServidor = input<string | null>(null);

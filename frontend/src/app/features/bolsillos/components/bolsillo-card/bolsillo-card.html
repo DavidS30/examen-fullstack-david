@@ -1,7 +1,11 @@
 <article class="card" [class.card--completado]="bolsillo().completado">
   <header class="card__header">
     <h3 class="card__nombre">{{ bolsillo().nombre }}</h3>
-    <span class="card__estado" [class.card__estado--ok]="bolsillo().completado">
+    <span
+      class="card__estado"
+      [class.card__estado--ok]="bolsillo().completado"
+      [attr.aria-label]="bolsillo().completado ? 'Meta completada' : 'Meta en progreso'"
+    >
       {{ bolsillo().completado ? 'Completada' : 'En progreso' }}
     </span>
   </header>
@@ -11,10 +15,23 @@
     <span class="card__monto-objetivo">de $ {{ bolsillo().objetivo | number }}</span>
   </div>
 
-  <div class="card__barra" role="progressbar" [attr.aria-valuenow]="bolsillo().progreso" aria-valuemin="0" aria-valuemax="100">
+  <div
+    class="card__barra"
+    role="progressbar"
+    [attr.aria-valuenow]="bolsillo().progreso"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    [attr.aria-label]="'Progreso de ' + bolsillo().nombre"
+  >
     <div class="card__barra-fill" [style.width.%]="bolsillo().progreso"></div>
   </div>
-  <p class="card__progreso">{{ bolsillo().progreso }}%</p>
+
+  <div class="card__progreso-line">
+    <span class="card__progreso">{{ bolsillo().progreso }}%</span>
+    @if (!bolsillo().completado) {
+      <span class="card__restante">Faltan $ {{ bolsillo().objetivo - bolsillo().acumulado | number }}</span>
+    }
+  </div>
 
   @if (bolsillo().completado) {
     <div class="card__completado-msg">

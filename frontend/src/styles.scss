@@ -1,25 +1,40 @@
 :root {
-  --color-primario: #0f766e;
-  --color-primario-oscuro: #115e59;
+  --color-primario: #0d9488;
+  --color-primario-oscuro: #0f766e;
+  --color-primario-profundo: #134e4a;
+  --color-acento: #f59e0b;
   --color-exito: #16a34a;
-  --color-fondo: #f6f7f9;
+  --color-peligro: #dc2626;
+  --color-fondo: #f4f6f3;
   --color-superficie: #ffffff;
-  --color-texto: #1e293b;
-  --color-texto-suave: #64748b;
-  --color-borde: #e2e8f0;
-  --sombra-suave: 0 1px 3px rgb(0 0 0 / 0.08);
-  --radio: 12px;
+  --color-texto: #172121;
+  --color-texto-suave: #5b6b68;
+  --color-borde: #e2e8e0;
+  --sombra-suave: 0 1px 3px rgb(15 46 42 / 0.08);
+  --sombra-media: 0 10px 30px rgb(15 46 42 / 0.12);
+  --radio: 16px;
+  --fuente-display: 'Fraunces', Georgia, serif;
+  --fuente-cuerpo: 'DM Sans', system-ui, sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  background: var(--color-fondo);
+  font-family: var(--fuente-cuerpo);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgb(13 148 136 / 0.14), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgb(245 158 11 / 0.1), transparent 55%),
+    var(--color-fondo);
+  background-attachment: fixed;
   color: var(--color-texto);
+  line-height: 1.5;
 }
 
 button {
@@ -29,4 +44,58 @@ button {
 
 input {
   font-family: inherit;
+}
+
+/* Enlace para saltar al contenido (teclado / screen readers) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--color-primario-profundo);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 0 0 10px 0;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:focus {
+    left: 0;
+  }
+}
+
+/* Texto visualmente oculto pero disponible para lectores de pantalla */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Indicador de foco visible solo para navegación por teclado */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respetar la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

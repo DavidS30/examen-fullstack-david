@@ -1,19 +1,43 @@
 .dashboard {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 32px 24px 64px;
+  padding: 40px 24px 80px;
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
+  }
+
+  &__marca {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__logo {
+    font-size: 2.4rem;
+    filter: drop-shadow(0 4px 10px rgb(245 158 11 / 0.4));
+  }
+
+  &__eyebrow {
+    margin: 0 0 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-primario);
   }
 
   &__titulo {
     margin: 0;
-    font-size: 1.8rem;
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: -0.02em;
+    color: var(--color-texto);
   }
 
   &__subtitulo {
@@ -25,13 +49,14 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #ecfdf5;
+    background: rgb(236 253 245 / 0.9);
     color: var(--color-exito);
     font-weight: 600;
     font-size: 0.8rem;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: 999px;
     border: 1px solid #a7f3d0;
+    white-space: nowrap;
   }
 
   &__live-dot {
@@ -42,18 +67,49 @@
     animation: pulso 1.4s ease-in-out infinite;
   }
 
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__stat {
+    background: linear-gradient(135deg, var(--color-primario-profundo), var(--color-primario-oscuro));
+    color: #fff;
+    border-radius: var(--radio);
+    padding: 18px 22px;
+    box-shadow: var(--sombra-media);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__stat-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+  }
+
+  &__stat-valor {
+    font-family: var(--fuente-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+
   &__crear {
     background: var(--color-superficie);
     border: 1px solid var(--color-borde);
     border-radius: var(--radio);
-    padding: 16px;
+    padding: 18px;
     box-shadow: var(--sombra-suave);
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
 
   &__error {
     margin: 10px 0 0;
-    color: #dc2626;
+    color: var(--color-peligro);
     font-size: 0.9rem;
   }
 
@@ -72,35 +128,79 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
   }
+
+  &__vacio {
+    text-align: center;
+    padding: 56px 24px;
+    border: 1.5px dashed var(--color-borde);
+    border-radius: var(--radio);
+    background: rgb(255 255 255 / 0.6);
+  }
+
+  &__vacio-icono {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  &__vacio-titulo {
+    margin: 0 0 6px;
+    font-family: var(--fuente-display);
+    font-size: 1.3rem;
+  }
+
+  &__vacio-texto {
+    margin: 0;
+    color: var(--color-texto-suave);
+  }
 }
 
 .crear-form {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
+
+  &__campo {
+    flex: 1 1 220px;
+    min-width: 0;
+  }
 
   input {
-    padding: 10px 12px;
+    width: 100%;
+    padding: 12px 14px;
     border: 1px solid var(--color-borde);
-    border-radius: 8px;
-    flex: 1 1 200px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    min-height: 44px;
 
-    &:focus {
+    &::placeholder {
+      color: #9aa8a5;
+    }
+
+    &:focus-visible {
       outline: 2px solid var(--color-primario);
       outline-offset: 1px;
     }
   }
 
   &__btn {
-    padding: 10px 20px;
+    padding: 12px 24px;
+    min-height: 44px;
     border: none;
-    border-radius: 8px;
-    background: var(--color-primario);
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--color-primario), var(--color-primario-oscuro));
     color: #fff;
     font-weight: 600;
+    box-shadow: 0 6px 16px rgb(15 118 110 / 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-    &:hover {
-      background: var(--color-primario-oscuro);
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgb(15 118 110 / 0.4);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
     }
 
     &:disabled {

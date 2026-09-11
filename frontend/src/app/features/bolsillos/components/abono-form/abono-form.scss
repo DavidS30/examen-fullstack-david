@@ -3,13 +3,26 @@
   flex-direction: column;
   gap: 8px;
 
+  &__fila {
+    display: flex;
+    gap: 8px;
+  }
+
   &__btn {
-    padding: 8px 14px;
+    padding: 10px 18px;
+    min-width: 44px;
+    min-height: 44px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     background: var(--color-primario);
     color: #fff;
-    font-weight: 500;
+    font-weight: 600;
+    transition: background 0.15s ease, transform 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--color-primario-oscuro);
+      transform: translateY(-1px);
+    }
 
     &:disabled {
       opacity: 0.5;
@@ -19,14 +32,26 @@
 
   &__error {
     margin: 0;
-    color: #dc2626;
+    color: var(--color-peligro);
     font-size: 0.85rem;
   }
 }
 
 input[type='number'] {
-  padding: 8px 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 10px 12px;
+  min-height: 44px;
   border: 1px solid var(--color-borde);
-  border-radius: 8px;
-  width: 100%;
+  border-radius: 10px;
+  font-size: 0.95rem;
+
+  &::placeholder {
+    color: #9aa8a5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primario);
+    outline-offset: 1px;
+  }
 }

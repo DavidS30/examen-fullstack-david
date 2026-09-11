@@ -114,8 +114,8 @@ describe('DashboardPage', () => {
 
   it('crearBolsillo_botonConFormValido_llamaAlStore', () => {
     const el = fixture.nativeElement as HTMLElement;
-    const nombreInput = el.querySelector('input[aria-label="Nombre de la meta"]') as HTMLInputElement;
-    const objetivoInput = el.querySelector('input[aria-label="Monto objetivo"]') as HTMLInputElement;
+    const nombreInput = el.querySelector('input[formControlName="nombre"]') as HTMLInputElement;
+    const objetivoInput = el.querySelector('input[formControlName="objetivo"]') as HTMLInputElement;
 
     nombreInput.value = 'Viaje a Cartagena';
     nombreInput.dispatchEvent(new Event('input'));
