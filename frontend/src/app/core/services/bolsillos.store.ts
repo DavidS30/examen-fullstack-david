@@ -1,6 +1,6 @@
 import { Injectable, inject, OnDestroy, signal } from '@angular/core';
 import { Observable, Subscription, tap } from 'rxjs';
-import { Bolsillo, CrearBolsilloRequest, AbonoRequest } from '../models/bolsillo.model';
+import { AbonoRequest, Bolsillo, CrearBolsilloRequest, EditarBolsilloRequest } from '../models/bolsillo.model';
 import { SSE_EVENTOS, SseMensaje } from '../models/sse-events.model';
 import { extraerMensajeError } from '../utils/errores';
 import { BolsillosService } from './bolsillos.service';
@@ -69,6 +69,12 @@ export class BolsillosStoreService implements OnDestroy {
 
   abonar(id: number, datos: AbonoRequest): Observable<Bolsillo> {
     return this.bolsillosService.abonar(id, datos).pipe(
+      tap((bolsillo) => this.actualizarBolsillo(bolsillo))
+    );
+  }
+
+  editar(id: number, datos: EditarBolsilloRequest): Observable<Bolsillo> {
+    return this.bolsillosService.editar(id, datos).pipe(
       tap((bolsillo) => this.actualizarBolsillo(bolsillo))
     );
   }

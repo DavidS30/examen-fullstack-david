@@ -3,6 +3,7 @@ package com.bolsillo.domain.bolsillo;
 import com.bolsillo.domain.exception.MetaNoCompletadaException;
 import com.bolsillo.domain.exception.MontoExcedeObjetivoException;
 import com.bolsillo.domain.exception.MontoInvalidoException;
+import com.bolsillo.domain.exception.ObjetivoInvalidoException;
 import com.bolsillo.domain.money.Money;
 
 import java.math.BigDecimal;
@@ -15,8 +16,8 @@ import java.math.RoundingMode;
 public final class Bolsillo {
 
     private final Long id;
-    private final String nombre;
-    private final Money objetivo;
+    private String nombre;
+    private Money objetivo;
     private Money acumulado;
     private boolean archivado;
 
@@ -74,6 +75,23 @@ public final class Bolsillo {
 
     public void restaurar() {
         archivado = false;
+    }
+
+    public void editar(String nuevoNombre, Money nuevoObjetivo) {
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            throw new MontoInvalidoException("El nombre del bolsillo no puede estar vacío");
+        }
+        if (nuevoObjetivo.valor().signum() <= 0) {
+            throw new MontoInvalidoException("El monto objetivo debe ser mayor a cero");
+        }
+        if (nuevoObjetivo.esMenorQue(acumulado)) {
+            throw new ObjetivoInvalidoException(
+                    "El nuevo objetivo no puede ser menor que lo ya ahorrado ($"
+                            + acumulado.valor() + ")"
+            );
+        }
+        this.nombre = nuevoNombre.trim();
+        this.objetivo = nuevoObjetivo;
     }
 
     public boolean estaCompleto() {

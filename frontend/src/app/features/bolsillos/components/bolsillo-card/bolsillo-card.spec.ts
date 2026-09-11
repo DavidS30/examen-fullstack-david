@@ -160,4 +160,14 @@ describe('BolsilloCardComponent', () => {
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
+
+  it('editar_conClicEnElBoton_emiteElEvento', () => {
+    const spy = vi.fn();
+    component.editar.subscribe(spy);
+
+    const btn = fixture.nativeElement.querySelector('.card__editar') as HTMLButtonElement;
+    btn.click();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 });

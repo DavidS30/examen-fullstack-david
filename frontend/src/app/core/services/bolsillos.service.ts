@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Bolsillo, CrearBolsilloRequest, AbonoRequest } from '../models/bolsillo.model';
+import { AbonoRequest, Bolsillo, CrearBolsilloRequest, EditarBolsilloRequest } from '../models/bolsillo.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -31,5 +31,9 @@ export class BolsillosService {
 
   restaurar(id: number): Observable<Bolsillo> {
     return this.http.patch<Bolsillo>(`${this.apiUrl}/${id}/restaurar`, null);
+  }
+
+  editar(id: number, datos: EditarBolsilloRequest): Observable<Bolsillo> {
+    return this.http.patch<Bolsillo>(`${this.apiUrl}/${id}`, datos);
   }
 }

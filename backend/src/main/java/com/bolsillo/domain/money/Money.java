@@ -31,6 +31,10 @@ public record Money(BigDecimal valor) {
         return valor.compareTo(otro.valor) > 0;
     }
 
+    public boolean esMenorQue(Money otro) {
+        return valor.compareTo(otro.valor) < 0;
+    }
+
     public boolean esIgualA(Money otro) {
         return valor.compareTo(otro.valor) == 0;
     }

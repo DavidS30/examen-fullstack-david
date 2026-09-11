@@ -99,6 +99,7 @@
             [bolsillo]="bolsillo"
             [style.animation-delay]="(i * 60) + 'ms'"
             (archivar)="archivarMeta(bolsillo.id)"
+            (editar)="editando.set(bolsillo)"
           />
         }
       </div>
@@ -130,6 +131,14 @@
       [permitirCancelar]="cambiandoUsuario()"
       (guardarNombre)="guardarNombre($event)"
       (cancelar)="cancelarCambio()"
+    />
+  }
+
+  @if (editando(); as bolsillo) {
+    <app-editar-meta-modal
+      [bolsillo]="bolsillo"
+      (guardar)="guardarEdicion(bolsillo.id, $event)"
+      (cancelar)="editando.set(null)"
     />
   }
 

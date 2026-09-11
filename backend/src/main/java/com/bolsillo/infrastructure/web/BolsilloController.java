@@ -2,6 +2,7 @@ package com.bolsillo.infrastructure.web;
 
 import com.bolsillo.application.usecase.ArchivarBolsilloUseCase;
 import com.bolsillo.application.usecase.CrearBolsilloUseCase;
+import com.bolsillo.application.usecase.EditarBolsilloUseCase;
 import com.bolsillo.application.usecase.ListarBolsillosUseCase;
 import com.bolsillo.application.usecase.RegistrarAbonoUseCase;
 import com.bolsillo.domain.bolsillo.Bolsillo;
@@ -9,6 +10,7 @@ import com.bolsillo.domain.money.Money;
 import com.bolsillo.infrastructure.web.dto.AbonoRequest;
 import com.bolsillo.infrastructure.web.dto.BolsilloResponse;
 import com.bolsillo.infrastructure.web.dto.CrearBolsilloRequest;
+import com.bolsillo.infrastructure.web.dto.EditarBolsilloRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,17 +32,20 @@ public class BolsilloController {
     private final ListarBolsillosUseCase listarBolsillosUseCase;
     private final RegistrarAbonoUseCase registrarAbonoUseCase;
     private final ArchivarBolsilloUseCase archivarBolsilloUseCase;
+    private final EditarBolsilloUseCase editarBolsilloUseCase;
 
     public BolsilloController(
             CrearBolsilloUseCase crearBolsilloUseCase,
             ListarBolsillosUseCase listarBolsillosUseCase,
             RegistrarAbonoUseCase registrarAbonoUseCase,
-            ArchivarBolsilloUseCase archivarBolsilloUseCase
+            ArchivarBolsilloUseCase archivarBolsilloUseCase,
+            EditarBolsilloUseCase editarBolsilloUseCase
     ) {
         this.crearBolsilloUseCase = crearBolsilloUseCase;
         this.listarBolsillosUseCase = listarBolsillosUseCase;
         this.registrarAbonoUseCase = registrarAbonoUseCase;
         this.archivarBolsilloUseCase = archivarBolsilloUseCase;
+        this.editarBolsilloUseCase = editarBolsilloUseCase;
     }
 
     @GetMapping
@@ -78,5 +83,11 @@ public class BolsilloController {
     @PatchMapping("/{id}/restaurar")
     public BolsilloResponse restaurar(@PathVariable Long id) {
         return BolsilloResponse.from(archivarBolsilloUseCase.restaurar(id));
+    }
+
+    @PatchMapping("/{id}")
+    public BolsilloResponse editar(@PathVariable Long id, @Valid @RequestBody EditarBolsilloRequest request) {
+        Bolsillo bolsillo = editarBolsilloUseCase.editar(id, request.nombre(), new Money(request.objetivo()));
+        return BolsilloResponse.from(bolsillo);
     }
 }

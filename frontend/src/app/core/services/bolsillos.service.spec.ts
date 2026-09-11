@@ -109,4 +109,18 @@ describe('BolsillosService', () => {
     expect(req.request.method).toBe('PATCH');
     req.flush(bolsilloBase);
   });
+
+  it('editar_enviaPatchConDatos_devuelveBolsilloEditado', () => {
+    const datos = { nombre: 'Viaje a Cartagena', objetivo: 1500 };
+    const editado: Bolsillo = { ...bolsilloBase, nombre: 'Viaje a Cartagena', objetivo: 1500 };
+
+    service.editar(1, datos).subscribe((bolsillo) => {
+      expect(bolsillo).toEqual(editado);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/bolsillos/1`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(datos);
+    req.flush(editado);
+  });
 });

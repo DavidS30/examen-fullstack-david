@@ -1,13 +1,30 @@
 <article class="card" [class.card--completado]="bolsillo().completado">
   <header class="card__header">
-    <h3 class="card__nombre">{{ bolsillo().nombre }}</h3>
-    <span
-      class="card__estado"
-      [class.card__estado--ok]="bolsillo().completado"
-      [attr.aria-label]="bolsillo().completado ? 'Meta completada' : 'Meta en progreso'"
-    >
-      {{ bolsillo().completado ? 'Completada' : 'En progreso' }}
-    </span>
+    <div class="card__titulo">
+      <span
+        class="card__icono"
+        [style.--acento]="acento()"
+        aria-hidden="true"
+      >{{ icono() }}</span>
+      <h3 class="card__nombre" [title]="bolsillo().nombre">{{ bolsillo().nombre }}</h3>
+    </div>
+    <div class="card__acciones">
+      <button
+        type="button"
+        class="card__editar"
+        (click)="editar.emit()"
+        aria-label="Editar meta {{ bolsillo().nombre }}"
+      >
+        ✏️
+      </button>
+      <span
+        class="card__estado"
+        [class.card__estado--ok]="bolsillo().completado"
+        [attr.aria-label]="bolsillo().completado ? 'Meta completada' : 'Meta en progreso'"
+      >
+        {{ bolsillo().completado ? 'Completada' : 'En progreso' }}
+      </span>
+    </div>
   </header>
 
   <div class="card__monto">
@@ -29,7 +46,9 @@
   <div class="card__progreso-line">
     <span class="card__progreso">{{ bolsillo().progreso }}%</span>
     @if (!bolsillo().completado) {
-      <span class="card__restante">Faltan {{ bolsillo().objetivo - bolsillo().acumulado | pesos }}</span>
+      <span class="card__restante" [title]="'Faltan ' + (bolsillo().objetivo - bolsillo().acumulado | pesos)">
+        Faltan {{ bolsillo().objetivo - bolsillo().acumulado | pesos }}
+      </span>
     }
   </div>
 

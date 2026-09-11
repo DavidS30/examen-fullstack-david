@@ -1,0 +1,52 @@
+<dialog
+  #dialogo
+  class="editar"
+  aria-labelledby="editar-titulo"
+  (click)="onBackdropClick($event)"
+  (cancel)="onCancelarEvent($event)"
+>
+  <h2 id="editar-titulo" class="editar__titulo">Editar meta</h2>
+  <p class="editar__texto">
+    Llevas ahorrado <strong>{{ bolsillo().acumulado | pesos }}</strong>; el nuevo objetivo no
+    puede ser menor que eso.
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="enviar()" class="editar__form">
+    <div class="editar__campo">
+      <label class="visually-hidden" for="editar-nombre">Nombre de la meta</label>
+      <input
+        id="editar-nombre"
+        type="text"
+        formControlName="nombre"
+        placeholder="Nombre de la meta"
+        [attr.aria-invalid]="form.controls.nombre.invalid && form.controls.nombre.touched"
+      />
+      @if (form.controls.nombre.invalid && form.controls.nombre.touched) {
+        <p class="editar__error" role="alert">El nombre debe tener al menos 3 caracteres.</p>
+      }
+    </div>
+
+    <div class="editar__campo">
+      <label class="visually-hidden" for="editar-objetivo">Monto objetivo</label>
+      <input
+        id="editar-objetivo"
+        type="number"
+        min="1"
+        step="100"
+        formControlName="objetivo"
+        placeholder="Monto objetivo (mín. $100)"
+        [attr.aria-invalid]="form.controls.objetivo.invalid && form.controls.objetivo.touched"
+      />
+      @if (form.controls.objetivo.invalid && form.controls.objetivo.touched) {
+        <p class="editar__error" role="alert">El objetivo debe ser mayor a $0.</p>
+      }
+    </div>
+
+    <div class="editar__acciones">
+      <button type="button" class="editar__btn editar__btn--secundario" (click)="cancelar.emit()">
+        Cancelar
+      </button>
+      <button type="submit" [disabled]="form.invalid" class="editar__btn">Guardar</button>
+    </div>
+  </form>
+</dialog>

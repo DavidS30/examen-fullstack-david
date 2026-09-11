@@ -6,9 +6,11 @@ import { NotificacionService } from '../../../core/services/notificacion.service
 import { BolsillosStoreService } from '../../../core/services/bolsillos.store';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { extraerMensajeError } from '../../../core/utils/errores';
+import { Bolsillo, EditarBolsilloRequest } from '../../../core/models/bolsillo.model';
 import { BienvenidaModalComponent } from '../components/bienvenida-modal/bienvenida-modal';
 import { ArchivadaCardComponent } from '../components/archivada-card/archivada-card';
 import { BolsilloCardComponent } from '../components/bolsillo-card/bolsillo-card';
+import { EditarMetaModalComponent } from '../components/editar-meta-modal/editar-meta-modal';
 import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/meta-alcanzada-modal';
 
 @Component({
@@ -21,6 +23,7 @@ import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/
     BienvenidaModalComponent,
     ArchivadaCardComponent,
     BolsilloCardComponent,
+    EditarMetaModalComponent,
     MetaAlcanzadaModalComponent,
   ],
   templateUrl: './dashboard.html',
@@ -40,6 +43,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   readonly usuarioNombre = this.usuarioService.nombre;
   readonly cambiandoUsuario = signal<boolean>(false);
+  readonly editando = signal<Bolsillo | null>(null);
 
   readonly totalAhorrado = computed(() =>
     this.bolsillos().reduce((total, bolsillo) => total + bolsillo.acumulado, 0)
@@ -110,6 +114,16 @@ export class DashboardPage implements OnInit, OnDestroy {
   restaurarMeta(id: number): void {
     this.store.restaurar(id).subscribe({
       next: () => this.notificaciones.exito('Meta restaurada'),
+      error: (err: unknown) => this.notificaciones.error(extraerMensajeError(err)),
+    });
+  }
+
+  guardarEdicion(id: number, datos: EditarBolsilloRequest): void {
+    this.store.editar(id, datos).subscribe({
+      next: () => {
+        this.editando.set(null);
+        this.notificaciones.exito('Meta actualizada');
+      },
       error: (err: unknown) => this.notificaciones.error(extraerMensajeError(err)),
     });
   }

@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Bolsillo } from '../../../../core/models/bolsillo.model';
 import { PesosPipe } from '../../../../core/pipes/pesos.pipe';
@@ -6,6 +6,9 @@ import { NotificacionService } from '../../../../core/services/notificacion.serv
 import { BolsillosStoreService } from '../../../../core/services/bolsillos.store';
 import { extraerMensajeError } from '../../../../core/utils/errores';
 import { AbonoFormComponent } from '../abono-form/abono-form';
+
+const ICONOS_META = ['🪙', '🐷', '🌴', '✈️', '🏠', '💻', '🎓', '🚗', '💍', '🎁', '🏖️', '📱'];
+const ACENTOS_META = ['#0d9488', '#f59e0b', '#8b5cf6', '#f43f5e', '#3b82f6', '#84cc16'];
 
 @Component({
   selector: 'app-bolsillo-card',
@@ -22,6 +25,13 @@ export class BolsilloCardComponent {
   readonly abonando = signal<boolean>(false);
   readonly errorAbono = signal<string | null>(null);
   readonly archivar = output<void>();
+  readonly editar = output<void>();
+
+  private readonly hash = computed(() =>
+    [...this.bolsillo().nombre].reduce((total, letra) => total + letra.charCodeAt(0), 0)
+  );
+  readonly icono = computed(() => ICONOS_META[this.hash() % ICONOS_META.length]);
+  readonly acento = computed(() => ACENTOS_META[this.hash() % ACENTOS_META.length]);
 
   abonar(monto: number): void {
     this.errorAbono.set(null);

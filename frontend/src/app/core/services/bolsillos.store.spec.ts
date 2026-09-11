@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { BolsillosStoreService } from './bolsillos.store';
 import { BolsillosService } from './bolsillos.service';
 import { SseService } from './sse.service';
-import { AbonoRequest, Bolsillo, CrearBolsilloRequest } from '../models/bolsillo.model';
+import { AbonoRequest, Bolsillo, CrearBolsilloRequest, EditarBolsilloRequest } from '../models/bolsillo.model';
 import { SSE_EVENTOS, SseMensaje } from '../models/sse-events.model';
 
 type BolsillosServiceStub = {
@@ -14,6 +14,7 @@ type BolsillosServiceStub = {
   abonar: (id: number, datos: AbonoRequest) => Observable<Bolsillo>;
   archivar: (id: number) => Observable<Bolsillo>;
   restaurar: (id: number) => Observable<Bolsillo>;
+  editar: (id: number, datos: EditarBolsilloRequest) => Observable<Bolsillo>;
 };
 
 type SseServiceStub = {
@@ -68,6 +69,7 @@ describe('BolsillosStoreService', () => {
   let abonarSubject: Subject<Bolsillo>;
   let archivarSubject: Subject<Bolsillo>;
   let restaurarSubject: Subject<Bolsillo>;
+  let editarSubject: Subject<Bolsillo>;
   let sseSubject: Subject<SseMensaje>;
   let bolsillosServiceStub: BolsillosServiceStub;
   let sseServiceStub: SseServiceStub;
@@ -79,6 +81,7 @@ describe('BolsillosStoreService', () => {
     abonarSubject = new Subject<Bolsillo>();
     archivarSubject = new Subject<Bolsillo>();
     restaurarSubject = new Subject<Bolsillo>();
+    editarSubject = new Subject<Bolsillo>();
     sseSubject = new Subject<SseMensaje>();
 
     bolsillosServiceStub = {
@@ -90,6 +93,7 @@ describe('BolsillosStoreService', () => {
       abonar: vi.fn<BolsillosServiceStub['abonar']>(() => abonarSubject.asObservable()),
       archivar: vi.fn<BolsillosServiceStub['archivar']>(() => archivarSubject.asObservable()),
       restaurar: vi.fn<BolsillosServiceStub['restaurar']>(() => restaurarSubject.asObservable()),
+      editar: vi.fn<BolsillosServiceStub['editar']>(() => editarSubject.asObservable()),
     };
     sseServiceStub = {
       conectar: vi.fn<SseServiceStub['conectar']>(() => sseSubject.asObservable()),
@@ -234,5 +238,21 @@ describe('BolsillosStoreService', () => {
     expect(bolsillosServiceStub.restaurar).toHaveBeenCalledWith(1);
     expect(store.archivadas()).toEqual([]);
     expect(store.bolsillos()).toEqual([bolsilloCompletado]);
+  });
+
+  it('editar_actualizaElBolsilloEnLaLista', () => {
+    store.iniciar();
+    listarSubject.next([bolsillo1]);
+    listarSubject.complete();
+
+    const editado: Bolsillo = { ...bolsillo1, nombre: 'Viaje a Cartagena', objetivo: 1500 };
+    store.editar(1, { nombre: 'Viaje a Cartagena', objetivo: 1500 }).subscribe();
+    editarSubject.next(editado);
+
+    expect(bolsillosServiceStub.editar).toHaveBeenCalledWith(1, {
+      nombre: 'Viaje a Cartagena',
+      objetivo: 1500,
+    });
+    expect(store.bolsillos()).toEqual([editado]);
   });
 });

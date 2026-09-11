@@ -128,3 +128,18 @@ Aplicada tras instalar las skills de `frontend-design` y `accessibility`:
   exitoso.
 - **Tests**: backend 63 (dominio, caso de uso, controller) y frontend 78 (service, store,
   dashboard, card, abono-form). Todos en verde.
+
+## 8. Iteración: responsive de tarjetas, icono decorativo y edición de metas
+
+- **Fix responsive**: las tarjetas ya no colisionan con montos grandes — `min-width: 0` en el
+  host, montos con `flex-wrap`, `clamp()` para el tamaño de la cifra, y `text-overflow:
+  ellipsis` con `title` en nombre, "de …" y "Faltan …".
+- **Icono decorativo**: cada tarjeta muestra un icono (alcancía, viaje, hogar…) y un acento
+  de color derivados de forma determinista del nombre (hash sobre el nombre), sutil y sin
+  tocar el backend.
+- **Edición de metas** (backend + frontend): `PATCH /api/bolsillos/{id}` permite cambiar
+  nombre y objetivo. Regla de negocio nueva respetando la invariante `acumulado <= objetivo`
+  (`ObjetivoInvalidoException` → 400 si el nuevo objetivo es menor que lo ya ahorrado). UI:
+  botón ✏️ en la tarjeta → modal `editar-meta-modal` (dialog nativo) con campos precargados
+  y validación.
+- **Tests**: backend 73 y frontend 87, todos en verde.

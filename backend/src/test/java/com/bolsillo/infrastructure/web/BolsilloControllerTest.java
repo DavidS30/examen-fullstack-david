@@ -3,12 +3,14 @@ package com.bolsillo.infrastructure.web;
 import com.bolsillo.application.exception.BolsilloNoEncontradoException;
 import com.bolsillo.application.usecase.ArchivarBolsilloUseCase;
 import com.bolsillo.application.usecase.CrearBolsilloUseCase;
+import com.bolsillo.application.usecase.EditarBolsilloUseCase;
 import com.bolsillo.application.usecase.ListarBolsillosUseCase;
 import com.bolsillo.application.usecase.RegistrarAbonoUseCase;
 import com.bolsillo.domain.bolsillo.Bolsillo;
 import com.bolsillo.domain.exception.MetaNoCompletadaException;
 import com.bolsillo.domain.exception.MontoExcedeObjetivoException;
 import com.bolsillo.domain.exception.MontoInvalidoException;
+import com.bolsillo.domain.exception.ObjetivoInvalidoException;
 import com.bolsillo.domain.money.Money;
 import com.bolsillo.infrastructure.events.SseEmitterRegistry;
 import org.junit.jupiter.api.Test;
@@ -47,6 +49,9 @@ class BolsilloControllerTest {
 
     @MockBean
     private ArchivarBolsilloUseCase archivarBolsilloUseCase;
+
+    @MockBean
+    private EditarBolsilloUseCase editarBolsilloUseCase;
 
     @MockBean
     private SseEmitterRegistry sseEmitterRegistry;
@@ -260,5 +265,40 @@ class BolsilloControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].archivado").value(true))
                 .andExpect(jsonPath("$[0].nombre").value("Vacaciones"));
+    }
+
+    @Test
+    void editar_requestValido_retorna200YBody() throws Exception {
+        when(editarBolsilloUseCase.editar(eq(1L), eq("Viaje a Cartagena"), any(Money.class)))
+                .thenReturn(bolsilloParcial());
+
+        mockMvc.perform(patch("/api/bolsillos/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"Viaje a Cartagena\",\"objetivo\":1500}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombre").value("Vacaciones"))
+                .andExpect(jsonPath("$.acumulado").value(250));
+    }
+
+    @Test
+    void editar_objetivoMenorQueAcumulado_retorna400() throws Exception {
+        when(editarBolsilloUseCase.editar(eq(1L), eq("Vacaciones"), any(Money.class)))
+                .thenThrow(new ObjetivoInvalidoException("El nuevo objetivo no puede ser menor que lo ya ahorrado"));
+
+        mockMvc.perform(patch("/api/bolsillos/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"Vacaciones\",\"objetivo\":100}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void editar_bolsilloNoExiste_retorna404() throws Exception {
+        when(editarBolsilloUseCase.editar(eq(999L), eq("X"), any(Money.class)))
+                .thenThrow(new BolsilloNoEncontradoException(999L));
+
+        mockMvc.perform(patch("/api/bolsillos/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"X\",\"objetivo\":1000}"))
+                .andExpect(status().isNotFound());
     }
 }

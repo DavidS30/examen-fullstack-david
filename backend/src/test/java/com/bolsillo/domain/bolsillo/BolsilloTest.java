@@ -3,6 +3,7 @@ package com.bolsillo.domain.bolsillo;
 import com.bolsillo.domain.exception.MetaNoCompletadaException;
 import com.bolsillo.domain.exception.MontoExcedeObjetivoException;
 import com.bolsillo.domain.exception.MontoInvalidoException;
+import com.bolsillo.domain.exception.ObjetivoInvalidoException;
 import com.bolsillo.domain.money.Money;
 import org.junit.jupiter.api.Test;
 
@@ -124,5 +125,39 @@ class BolsilloTest {
         bolsillo.restaurar();
 
         assertFalse(bolsillo.archivado());
+    }
+
+    @Test
+    void editar_nombreYObjetivoValidos_cambiaAmbos() {
+        Bolsillo bolsillo = Bolsillo.reconstruir(1L, "Vacaciones", OBJETIVO, new Money(new BigDecimal("250")));
+
+        bolsillo.editar("Viaje a Cartagena", new Money(new BigDecimal("2000")));
+
+        assertEquals("Viaje a Cartagena", bolsillo.nombre());
+        assertEquals(0, bolsillo.objetivo().valor().compareTo(new BigDecimal("2000")));
+    }
+
+    @Test
+    void editar_objetivoMenorQueAcumulado_lanzaObjetivoInvalidoException() {
+        Bolsillo bolsillo = Bolsillo.reconstruir(1L, "Vacaciones", OBJETIVO, new Money(new BigDecimal("800")));
+
+        assertThrows(ObjetivoInvalidoException.class,
+                () -> bolsillo.editar("Vacaciones", new Money(new BigDecimal("500"))));
+    }
+
+    @Test
+    void editar_objetivoCero_lanzaMontoInvalidoException() {
+        Bolsillo bolsillo = Bolsillo.reconstruir(1L, "Vacaciones", OBJETIVO, new Money(new BigDecimal("250")));
+
+        assertThrows(MontoInvalidoException.class,
+                () -> bolsillo.editar("Vacaciones", new Money(BigDecimal.ZERO)));
+    }
+
+    @Test
+    void editar_nombreVacio_lanzaMontoInvalidoException() {
+        Bolsillo bolsillo = Bolsillo.reconstruir(1L, "Vacaciones", OBJETIVO, new Money(new BigDecimal("250")));
+
+        assertThrows(MontoInvalidoException.class,
+                () -> bolsillo.editar("   ", OBJETIVO));
     }
 }

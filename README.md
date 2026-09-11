@@ -69,6 +69,7 @@ cd frontend && npm test          # 39 tests frontend (vitest run)
 | POST   | `/api/bolsillos/{id}/abonos`     | Abona a una meta (monto)             |
 | PATCH  | `/api/bolsillos/{id}/archivar`   | Archiva una meta completada          |
 | PATCH  | `/api/bolsillos/{id}/restaurar`  | Restaura una meta archivada          |
+| PATCH  | `/api/bolsillos/{id}`            | Edita nombre/objetivo de una meta    |
 | GET    | `/api/notificaciones`            | Stream SSE de eventos en tiempo real |
 
 Eventos SSE: `abono-registrado` y `meta-alcanzada` (payload = estado actualizado del bolsillo).

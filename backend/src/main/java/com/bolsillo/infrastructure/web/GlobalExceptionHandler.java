@@ -4,6 +4,7 @@ import com.bolsillo.application.exception.BolsilloNoEncontradoException;
 import com.bolsillo.domain.exception.MetaNoCompletadaException;
 import com.bolsillo.domain.exception.MontoExcedeObjetivoException;
 import com.bolsillo.domain.exception.MontoInvalidoException;
+import com.bolsillo.domain.exception.ObjetivoInvalidoException;
 import com.bolsillo.infrastructure.web.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MetaNoCompletadaException.class)
     public ResponseEntity<ErrorResponse> handleMetaNoCompletada(MetaNoCompletadaException ex) {
+        return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ObjetivoInvalidoException.class)
+    public ResponseEntity<ErrorResponse> handleObjetivoInvalido(ObjetivoInvalidoException ex) {
         return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

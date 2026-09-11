@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { DashboardPage } from './dashboard';
 import { BolsillosStoreService } from '../../../core/services/bolsillos.store';
 import { UsuarioService } from '../../../core/services/usuario.service';
-import { AbonoRequest, Bolsillo, CrearBolsilloRequest } from '../../../core/models/bolsillo.model';
+import { AbonoRequest, Bolsillo, CrearBolsilloRequest, EditarBolsilloRequest } from '../../../core/models/bolsillo.model';
 
 type DashboardStoreStub = {
   bolsillos: Signal<Bolsillo[]>;
@@ -19,6 +19,7 @@ type DashboardStoreStub = {
   abonar: (id: number, datos: AbonoRequest) => Observable<Bolsillo>;
   archivar: (id: number) => Observable<Bolsillo>;
   restaurar: (id: number) => Observable<Bolsillo>;
+  editar: (id: number, datos: EditarBolsilloRequest) => Observable<Bolsillo>;
   cerrarMetaAlcanzada: () => void;
 };
 
@@ -90,6 +91,7 @@ describe('DashboardPage', () => {
       abonar: vi.fn<DashboardStoreStub['abonar']>(() => of(bolsillo1)),
       archivar: vi.fn<DashboardStoreStub['archivar']>(() => of(bolsillo1)),
       restaurar: vi.fn<DashboardStoreStub['restaurar']>(() => of(bolsillo1)),
+      editar: vi.fn<DashboardStoreStub['editar']>(() => of(bolsillo1)),
       cerrarMetaAlcanzada: vi.fn(),
     };
 
@@ -252,5 +254,23 @@ describe('DashboardPage', () => {
     component.restaurarMeta(2);
 
     expect(storeStub.restaurar).toHaveBeenCalledWith(2);
+  });
+
+  it('editando_conMeta_muestraElModalDeEdicion', () => {
+    component.editando.set(bolsillo1);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('app-editar-meta-modal')).not.toBeNull();
+  });
+
+  it('guardarEdicion_llamaAlStoreYCierraElModal', () => {
+    component.editando.set(bolsillo1);
+    fixture.detectChanges();
+
+    component.guardarEdicion(1, { nombre: 'Viaje', objetivo: 1500 });
+    fixture.detectChanges();
+
+    expect(storeStub.editar).toHaveBeenCalledWith(1, { nombre: 'Viaje', objetivo: 1500 });
+    expect(fixture.nativeElement.querySelector('app-editar-meta-modal')).toBeNull();
   });
 });

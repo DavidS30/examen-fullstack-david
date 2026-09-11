@@ -13,6 +13,11 @@ export interface CrearBolsilloRequest {
   objetivo: number;
 }
 
+export interface EditarBolsilloRequest {
+  nombre: string;
+  objetivo: number;
+}
+
 export interface AbonoRequest {
   monto: number;
 }

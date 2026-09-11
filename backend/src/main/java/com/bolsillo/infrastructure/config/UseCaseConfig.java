@@ -4,6 +4,7 @@ import com.bolsillo.application.ports.BolsilloRepository;
 import com.bolsillo.application.ports.NotificadorPort;
 import com.bolsillo.application.usecase.ArchivarBolsilloUseCase;
 import com.bolsillo.application.usecase.CrearBolsilloUseCase;
+import com.bolsillo.application.usecase.EditarBolsilloUseCase;
 import com.bolsillo.application.usecase.ListarBolsillosUseCase;
 import com.bolsillo.application.usecase.RegistrarAbonoUseCase;
 import org.springframework.context.annotation.Bean;
@@ -37,5 +38,10 @@ public class UseCaseConfig {
     @Bean
     public ArchivarBolsilloUseCase archivarBolsilloUseCase(BolsilloRepository repository) {
         return new ArchivarBolsilloUseCase(repository);
+    }
+
+    @Bean
+    public EditarBolsilloUseCase editarBolsilloUseCase(BolsilloRepository repository) {
+        return new EditarBolsilloUseCase(repository);
     }
 }
