@@ -42,6 +42,10 @@
       }
     </div>
 
+    @if (errorServidor(); as mensaje) {
+      <p class="editar__error editar__error--servidor" role="alert">{{ mensaje }}</p>
+    }
+
     <div class="editar__acciones">
       <button type="button" class="editar__btn editar__btn--secundario" (click)="cancelar.emit()">
         Cancelar

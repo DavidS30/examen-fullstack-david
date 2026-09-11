@@ -1,7 +1,7 @@
 <main id="contenido" class="dashboard">
   <header class="dashboard__header">
     <div class="dashboard__marca">
-      <span class="dashboard__logo" aria-hidden="true">🪙</span>
+      <img class="dashboard__logo" src="assets/billetera.png" alt="" aria-hidden="true" />
       <div>
         <p class="dashboard__eyebrow">Ahorro programado</p>
         <h1 class="dashboard__titulo">Mis bolsillos</h1>
@@ -99,7 +99,7 @@
             [bolsillo]="bolsillo"
             [style.animation-delay]="(i * 60) + 'ms'"
             (archivar)="archivarMeta(bolsillo.id)"
-            (editar)="editando.set(bolsillo)"
+            (editar)="abrirEdicion(bolsillo)"
           />
         }
       </div>
@@ -137,8 +137,10 @@
   @if (editando(); as bolsillo) {
     <app-editar-meta-modal
       [bolsillo]="bolsillo"
+      [errorServidor]="errorEdicion()"
       (guardar)="guardarEdicion(bolsillo.id, $event)"
       (cancelar)="editando.set(null)"
+      (cambio)="limpiarErrorEdicion()"
     />
   }
 

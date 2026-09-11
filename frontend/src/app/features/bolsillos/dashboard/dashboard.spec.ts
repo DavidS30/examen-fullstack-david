@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal, signal } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
 import { DashboardPage } from './dashboard';
 import { BolsillosStoreService } from '../../../core/services/bolsillos.store';
 import { UsuarioService } from '../../../core/services/usuario.service';
@@ -70,6 +71,7 @@ describe('DashboardPage', () => {
   let metaAlcanzadaSignal: WritableSignal<Bolsillo | null>;
   let nombreUsuarioSignal: WritableSignal<string | null>;
   let usuarioStub: UsuarioServiceStub;
+  let editarMock: ReturnType<typeof vi.fn<DashboardStoreStub['editar']>>;
 
   beforeEach(async () => {
     bolsillosSignal = signal<Bolsillo[]>([]);
@@ -78,6 +80,8 @@ describe('DashboardPage', () => {
     errorCargaSignal = signal<string | null>(null);
     metaAlcanzadaSignal = signal<Bolsillo | null>(null);
     nombreUsuarioSignal = signal<string | null>(null);
+
+    editarMock = vi.fn<DashboardStoreStub['editar']>(() => of(bolsillo1));
 
     storeStub = {
       bolsillos: bolsillosSignal.asReadonly(),
@@ -91,7 +95,7 @@ describe('DashboardPage', () => {
       abonar: vi.fn<DashboardStoreStub['abonar']>(() => of(bolsillo1)),
       archivar: vi.fn<DashboardStoreStub['archivar']>(() => of(bolsillo1)),
       restaurar: vi.fn<DashboardStoreStub['restaurar']>(() => of(bolsillo1)),
-      editar: vi.fn<DashboardStoreStub['editar']>(() => of(bolsillo1)),
+      editar: editarMock,
       cerrarMetaAlcanzada: vi.fn(),
     };
 
@@ -272,5 +276,27 @@ describe('DashboardPage', () => {
 
     expect(storeStub.editar).toHaveBeenCalledWith(1, { nombre: 'Viaje', objetivo: 1500 });
     expect(fixture.nativeElement.querySelector('app-editar-meta-modal')).toBeNull();
+  });
+
+  it('guardarEdicion_conErrorServidor_muestraErrorInlineYNoCierraElModal', () => {
+    component.editando.set(bolsillo1);
+    fixture.detectChanges();
+    editarMock.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            error: { message: 'El nuevo objetivo no puede ser menor que lo ya ahorrado' },
+            status: 400,
+            statusText: 'Bad Request',
+          })
+      )
+    );
+
+    component.guardarEdicion(1, { nombre: 'Viaje', objetivo: 100 });
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('app-editar-meta-modal')).not.toBeNull();
+    expect(el.textContent).toContain('El nuevo objetivo no puede ser menor que lo ya ahorrado');
   });
 });

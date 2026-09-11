@@ -65,4 +65,25 @@ describe('EditarMetaModalComponent', () => {
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
+
+  it('errorServidor_input_muestraElMensajeInline', () => {
+    fixture.componentRef.setInput(
+      'errorServidor',
+      'El nuevo objetivo no puede ser menor que lo ya ahorrado'
+    );
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+      'El nuevo objetivo no puede ser menor que lo ya ahorrado'
+    );
+  });
+
+  it('cambioDeValorEnElForm_emiteCambio', () => {
+    const spy = vi.fn();
+    component.cambio.subscribe(spy);
+
+    component.form.controls.objetivo.setValue(2000);
+
+    expect(spy).toHaveBeenCalled();
+  });
 });

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Bolsillo, EditarBolsilloRequest } from '../../../../core/models/bolsillo.model';
 import { PesosPipe } from '../../../../core/pipes/pesos.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-editar-meta-modal',
@@ -15,8 +16,10 @@ export class EditarMetaModalComponent implements OnInit, AfterViewInit {
   private readonly fb = inject(FormBuilder);
 
   readonly bolsillo = input.required<Bolsillo>();
+  readonly errorServidor = input<string | null>(null);
   readonly guardar = output<EditarBolsilloRequest>();
   readonly cancelar = output<void>();
+  readonly cambio = output<void>();
 
   readonly form = this.fb.nonNullable.group({
     nombre: ['', [Validators.required, Validators.minLength(3)]],
@@ -24,6 +27,12 @@ export class EditarMetaModalComponent implements OnInit, AfterViewInit {
   });
 
   private readonly dialogo = viewChild<ElementRef<HTMLDialogElement>>('dialogo');
+
+  constructor() {
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.cambio.emit());
+  }
 
   ngOnInit(): void {
     const actual = this.bolsillo();

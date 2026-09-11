@@ -44,6 +44,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   readonly usuarioNombre = this.usuarioService.nombre;
   readonly cambiandoUsuario = signal<boolean>(false);
   readonly editando = signal<Bolsillo | null>(null);
+  readonly errorEdicion = signal<string | null>(null);
 
   readonly totalAhorrado = computed(() =>
     this.bolsillos().reduce((total, bolsillo) => total + bolsillo.acumulado, 0)
@@ -118,13 +119,23 @@ export class DashboardPage implements OnInit, OnDestroy {
     });
   }
 
+  abrirEdicion(bolsillo: Bolsillo): void {
+    this.errorEdicion.set(null);
+    this.editando.set(bolsillo);
+  }
+
+  limpiarErrorEdicion(): void {
+    this.errorEdicion.set(null);
+  }
+
   guardarEdicion(id: number, datos: EditarBolsilloRequest): void {
+    this.errorEdicion.set(null);
     this.store.editar(id, datos).subscribe({
       next: () => {
         this.editando.set(null);
         this.notificaciones.exito('Meta actualizada');
       },
-      error: (err: unknown) => this.notificaciones.error(extraerMensajeError(err)),
+      error: (err: unknown) => this.errorEdicion.set(extraerMensajeError(err)),
     });
   }
 
