@@ -4,6 +4,7 @@ import { Signal, WritableSignal, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { DashboardPage } from './dashboard';
 import { BolsillosStoreService } from '../../../core/services/bolsillos.store';
+import { UsuarioService } from '../../../core/services/usuario.service';
 import { AbonoRequest, Bolsillo, CrearBolsilloRequest } from '../../../core/models/bolsillo.model';
 
 type DashboardStoreStub = {
@@ -16,6 +17,12 @@ type DashboardStoreStub = {
   crear: (datos: CrearBolsilloRequest) => Observable<Bolsillo>;
   abonar: (id: number, datos: AbonoRequest) => Observable<Bolsillo>;
   cerrarMetaAlcanzada: () => void;
+};
+
+type UsuarioServiceStub = {
+  nombre: Signal<string | null>;
+  guardar: (nombre: string) => void;
+  cambiar: () => void;
 };
 
 const bolsillo1: Bolsillo = {
@@ -53,12 +60,15 @@ describe('DashboardPage', () => {
   let cargandoSignal: WritableSignal<boolean>;
   let errorCargaSignal: WritableSignal<string | null>;
   let metaAlcanzadaSignal: WritableSignal<Bolsillo | null>;
+  let nombreUsuarioSignal: WritableSignal<string | null>;
+  let usuarioStub: UsuarioServiceStub;
 
   beforeEach(async () => {
     bolsillosSignal = signal<Bolsillo[]>([]);
     cargandoSignal = signal(false);
     errorCargaSignal = signal<string | null>(null);
     metaAlcanzadaSignal = signal<Bolsillo | null>(null);
+    nombreUsuarioSignal = signal<string | null>(null);
 
     storeStub = {
       bolsillos: bolsillosSignal.asReadonly(),
@@ -72,9 +82,18 @@ describe('DashboardPage', () => {
       cerrarMetaAlcanzada: vi.fn(),
     };
 
+    usuarioStub = {
+      nombre: nombreUsuarioSignal.asReadonly(),
+      guardar: vi.fn<UsuarioServiceStub['guardar']>((nombre) => nombreUsuarioSignal.set(nombre)),
+      cambiar: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [DashboardPage],
-      providers: [{ provide: BolsillosStoreService, useValue: storeStub }],
+      providers: [
+        { provide: BolsillosStoreService, useValue: storeStub },
+        { provide: UsuarioService, useValue: usuarioStub },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardPage);
@@ -155,5 +174,42 @@ describe('DashboardPage', () => {
     fixture.destroy();
 
     expect(storeStub.detener).toHaveBeenCalledTimes(1);
+  });
+
+  it('render_sinNombre_muestraElModalDeBienvenida', () => {
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('app-bienvenida-modal')).not.toBeNull();
+  });
+
+  it('render_conNombre_muestraElSaludoYOcultaElModal', () => {
+    nombreUsuarioSignal.set('Ana');
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('Hola, Ana');
+    expect(el.querySelector('app-bienvenida-modal')).toBeNull();
+  });
+
+  it('cambiarUsuario_abreElModalEnModoEdicionConElNombrePrecargado', () => {
+    nombreUsuarioSignal.set('Ana');
+    fixture.detectChanges();
+
+    component.cambiarUsuario();
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    const modal = el.querySelector('app-bienvenida-modal');
+    expect(modal).not.toBeNull();
+    expect(el.textContent).toContain('Guardar');
+  });
+
+  it('guardarNombre_guardaEnElServicioYCierraElModal', () => {
+    fixture.detectChanges();
+
+    component.guardarNombre('Ana');
+    fixture.detectChanges();
+
+    expect(usuarioStub.guardar).toHaveBeenCalledWith('Ana');
+    expect(fixture.nativeElement.querySelector('app-bienvenida-modal')).toBeNull();
   });
 });

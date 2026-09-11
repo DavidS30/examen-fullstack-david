@@ -1,0 +1,100 @@
+.bienvenida {
+  border: none;
+  border-radius: 20px;
+  padding: 36px 40px;
+  max-width: 420px;
+  width: calc(100% - 32px);
+  text-align: center;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.3);
+  color: var(--color-texto);
+  background: linear-gradient(180deg, #ffffff 0%, #fdfaf3 100%);
+
+  &::backdrop {
+    background: rgb(15 23 42 / 0.55);
+    backdrop-filter: blur(4px);
+  }
+
+  &__logo {
+    font-size: 2.6rem;
+    display: block;
+    filter: drop-shadow(0 4px 10px rgb(245 158 11 / 0.4));
+  }
+
+  &__titulo {
+    margin: 14px 0 6px;
+    font-family: var(--fuente-display);
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--color-primario-profundo);
+  }
+
+  &__texto {
+    margin: 0 0 18px;
+    color: var(--color-texto-suave);
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    min-height: 44px;
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+
+    &::placeholder {
+      color: #9aa8a5;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primario);
+      outline-offset: 1px;
+    }
+  }
+
+  &__error {
+    margin: 0;
+    color: var(--color-peligro);
+    font-size: 0.85rem;
+  }
+
+  &__acciones {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  &__btn {
+    padding: 12px 28px;
+    min-height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--color-primario), var(--color-primario-oscuro));
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgb(15 118 110 / 0.35);
+    transition: transform 0.15s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--secundario {
+      background: transparent;
+      color: var(--color-texto-suave);
+      box-shadow: none;
+      border: 1px solid var(--color-borde);
+    }
+  }
+}

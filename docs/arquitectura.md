@@ -62,3 +62,7 @@ espejo. El enunciado contempla explícitamente esta opción como válida.
   abono como fallback idempotente (el payload SSE y el HTTP traen el mismo estado).
 - **Sin Lombok/MapStruct**: se prefirió código explícito (records + getters a mano) para que
   el evaluador lea el flujo sin anotaciones mágicas; el costo de boilerplate es bajo.
+- **Identificación local del usuario (localStorage)**: se guarda únicamente el nombre en
+  `localStorage` (`bolsillo:usuario`) para personalizar la UI (saludo, empty state). NO es
+  autenticación: no hay credenciales ni estado en el backend, coherente con el alcance
+  cerrado y evita la sobre-ingeniería de un login.

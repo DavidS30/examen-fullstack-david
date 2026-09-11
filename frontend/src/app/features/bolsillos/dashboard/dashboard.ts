@@ -2,7 +2,9 @@ import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BolsillosStoreService } from '../../../core/services/bolsillos.store';
+import { UsuarioService } from '../../../core/services/usuario.service';
 import { extraerMensajeError } from '../../../core/utils/errores';
+import { BienvenidaModalComponent } from '../components/bienvenida-modal/bienvenida-modal';
 import { BolsilloCardComponent } from '../components/bolsillo-card/bolsillo-card';
 import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/meta-alcanzada-modal';
 
@@ -12,6 +14,7 @@ import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    BienvenidaModalComponent,
     BolsilloCardComponent,
     MetaAlcanzadaModalComponent,
   ],
@@ -20,6 +23,7 @@ import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/
 })
 export class DashboardPage implements OnInit, OnDestroy {
   private readonly store = inject(BolsillosStoreService);
+  private readonly usuarioService = inject(UsuarioService);
   private readonly fb = inject(FormBuilder);
 
   readonly bolsillos = this.store.bolsillos;
@@ -27,12 +31,22 @@ export class DashboardPage implements OnInit, OnDestroy {
   readonly errorCarga = this.store.errorCarga;
   readonly metaAlcanzada = this.store.metaAlcanzada;
 
+  readonly usuarioNombre = this.usuarioService.nombre;
+  readonly cambiandoUsuario = signal<boolean>(false);
+
   readonly totalAhorrado = computed(() =>
     this.bolsillos().reduce((total, bolsillo) => total + bolsillo.acumulado, 0)
   );
   readonly metasCompletadas = computed(
     () => this.bolsillos().filter((bolsillo) => bolsillo.completado).length
   );
+  readonly mostrarBienvenida = computed(
+    () => this.usuarioNombre() === null || this.cambiandoUsuario()
+  );
+  readonly tituloModal = computed(() =>
+    this.cambiandoUsuario() ? '¿Cómo prefieres que te llamemos?' : '¿Cómo te llamas?'
+  );
+  readonly botonModal = computed(() => (this.cambiandoUsuario() ? 'Guardar' : 'Empezar'));
 
   readonly errorCrear = signal<string | null>(null);
 
@@ -47,6 +61,19 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.store.detener();
+  }
+
+  guardarNombre(nombre: string): void {
+    this.usuarioService.guardar(nombre);
+    this.cambiandoUsuario.set(false);
+  }
+
+  cambiarUsuario(): void {
+    this.cambiandoUsuario.set(true);
+  }
+
+  cancelarCambio(): void {
+    this.cambiandoUsuario.set(false);
   }
 
   crearBolsillo(): void {

@@ -45,6 +45,37 @@
     color: var(--color-texto-suave);
   }
 
+  &__saludo {
+    margin: 4px 0 0;
+    font-weight: 600;
+    color: var(--color-primario-oscuro);
+  }
+
+  &__controles {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  &__cambiar-usuario {
+    padding: 8px 14px;
+    min-height: 44px;
+    border: 1px solid var(--color-borde);
+    border-radius: 999px;
+    background: var(--color-superficie);
+    color: var(--color-texto-suave);
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: border-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      border-color: var(--color-primario);
+      color: var(--color-primario-oscuro);
+    }
+  }
+
   &__live {
     display: inline-flex;
     align-items: center;

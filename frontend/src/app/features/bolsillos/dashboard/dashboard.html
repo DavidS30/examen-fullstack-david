@@ -5,13 +5,24 @@
       <div>
         <p class="dashboard__eyebrow">Ahorro programado</p>
         <h1 class="dashboard__titulo">Mis bolsillos</h1>
-        <p class="dashboard__subtitulo">Crea una meta, abona y mira tu progreso en tiempo real.</p>
+        @if (usuarioNombre(); as nombre) {
+          <p class="dashboard__saludo">Hola, {{ nombre }} 👋</p>
+        } @else {
+          <p class="dashboard__subtitulo">Crea una meta, abona y mira tu progreso en tiempo real.</p>
+        }
       </div>
     </div>
-    <span class="dashboard__live">
-      <span class="dashboard__live-dot"></span>
-      Tiempo real
-    </span>
+    <div class="dashboard__controles">
+      @if (usuarioNombre()) {
+        <button type="button" class="dashboard__cambiar-usuario" (click)="cambiarUsuario()">
+          Cambiar usuario
+        </button>
+      }
+      <span class="dashboard__live">
+        <span class="dashboard__live-dot"></span>
+        Tiempo real
+      </span>
+    </div>
   </header>
 
   <section class="dashboard__stats" aria-label="Resumen de ahorro">
@@ -65,7 +76,13 @@
       <div class="dashboard__vacio">
         <span class="dashboard__vacio-icono" aria-hidden="true">🌱</span>
         <h2 class="dashboard__vacio-titulo">Aún no tienes metas</h2>
-        <p class="dashboard__vacio-texto">Crea la primera con el formulario de arriba y empieza a ahorrar.</p>
+        <p class="dashboard__vacio-texto">
+          @if (usuarioNombre(); as nombre) {
+            Crea tu primera meta, {{ nombre }}, y empieza a ahorrar.
+          } @else {
+            Crea la primera con el formulario de arriba y empieza a ahorrar.
+          }
+        </p>
       </div>
     } @else {
       <div class="dashboard__grid">
@@ -78,6 +95,17 @@
       </div>
     }
   </section>
+
+  @if (mostrarBienvenida()) {
+    <app-bienvenida-modal
+      [titulo]="tituloModal()"
+      [botonTexto]="botonModal()"
+      [nombreInicial]="usuarioNombre()"
+      [permitirCancelar]="cambiandoUsuario()"
+      (guardarNombre)="guardarNombre($event)"
+      (cancelar)="cancelarCambio()"
+    />
+  }
 
   @if (metaAlcanzada(); as bolsillo) {
     <app-meta-alcanzada-modal [bolsillo]="bolsillo" (cerrar)="cerrarModal()" />

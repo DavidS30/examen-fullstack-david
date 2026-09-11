@@ -84,3 +84,17 @@ Aplicada tras instalar las skills de `frontend-design` y `accessibility`:
 - **Ajuste por test**: jsdom v28 no implementa `showModal()`/`close()`; se añadió un fallback
   defensivo (`setAttribute('open')` / emit directo) que conserva el comportamiento nativo en
   navegadores reales. 39/39 tests siguen en verde.
+
+## 5. Iteración: identificación local del usuario
+
+- **Idea del usuario**: personalizar la app con el nombre del usuario guardado en
+  `localStorage` (pedirlo al iniciar si no hay ninguno).
+- **Implementado**: `UsuarioService` (signal + `localStorage` bajo `bolsillo:usuario`),
+  `BienvenidaModalComponent` (reutiliza el patrón `<dialog>` nativo con su fallback jsdom;
+  ReactiveForms con validación mín. 2 caracteres, `aria-invalid` y `aria-describedby`),
+  saludo "Hola, {nombre}" en el header, subtítulo y empty state personalizados, y botón
+  "Cambiar usuario" (modal cancelable con nombre precargado).
+- **Decisión de diseño**: identificación **local**, no autenticación — sin credenciales ni
+  estado en backend, coherente con el alcance cerrado. Documentada en docs/arquitectura.md.
+- **Tests**: +14 (usuario.service, bienvenida-modal y dashboard con stub del `UsuarioService`).
+  Total frontend: 53 en verde.

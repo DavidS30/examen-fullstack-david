@@ -1,0 +1,42 @@
+<dialog
+  #dialogo
+  class="bienvenida"
+  [attr.aria-labelledby]="'bienvenida-titulo-' + campoId"
+  (click)="onBackdropClick($event)"
+  (cancel)="onCancelarEvent($event)"
+>
+  <span class="bienvenida__logo" aria-hidden="true">🪙</span>
+  <h2 [id]="'bienvenida-titulo-' + campoId" class="bienvenida__titulo">{{ titulo() }}</h2>
+  <p class="bienvenida__texto">Usaremos tu nombre para saludarte en tu dashboard.</p>
+
+  <form [formGroup]="form" (ngSubmit)="empezar()" class="bienvenida__form">
+    <label class="visually-hidden" [for]="campoId">Tu nombre</label>
+    <input
+      #inputNombre
+      [id]="campoId"
+      type="text"
+      formControlName="nombre"
+      placeholder="Tu nombre"
+      autocomplete="given-name"
+      [attr.aria-invalid]="form.controls.nombre.invalid && form.controls.nombre.touched"
+      [attr.aria-describedby]="
+        form.controls.nombre.invalid && form.controls.nombre.touched ? 'bienvenida-error-' + campoId : null
+      "
+    />
+    @if (form.controls.nombre.invalid && form.controls.nombre.touched) {
+      <p [id]="'bienvenida-error-' + campoId" class="bienvenida__error" role="alert">
+        Escribe tu nombre (mínimo 2 caracteres).
+      </p>
+    }
+    <div class="bienvenida__acciones">
+      <button type="submit" [disabled]="form.invalid" class="bienvenida__btn">
+        {{ botonTexto() }}
+      </button>
+      @if (permitirCancelar()) {
+        <button type="button" class="bienvenida__btn bienvenida__btn--secundario" (click)="cancelar.emit()">
+          Cancelar
+        </button>
+      }
+    </div>
+  </form>
+</dialog>
