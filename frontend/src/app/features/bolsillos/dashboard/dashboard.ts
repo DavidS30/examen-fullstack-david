@@ -95,14 +95,16 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.errorCrear.set(null);
     const { nombre, objetivo } = this.crearForm.getRawValue();
     this.store.crear({ nombre, objetivo }).subscribe({
-      next: () => this.notificaciones.exito('Meta creada'),
+      next: () => {
+        this.notificaciones.exito('Meta creada');
+        this.crearForm.reset({ nombre: '', objetivo: 0 });
+      },
       error: (err: unknown) => {
         const mensaje = extraerMensajeError(err);
         this.errorCrear.set(mensaje);
         this.notificaciones.error(mensaje);
       },
     });
-    this.crearForm.reset({ nombre: '', objetivo: 0 });
   }
 
   archivarMeta(id: number): void {

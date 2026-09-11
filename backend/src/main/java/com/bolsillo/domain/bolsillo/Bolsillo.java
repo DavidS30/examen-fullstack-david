@@ -30,10 +30,13 @@ public final class Bolsillo {
     }
 
     public static Bolsillo crear(Long id, String nombre, Money objetivo) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new MontoInvalidoException("El nombre del bolsillo no puede estar vacío");
+        }
         if (objetivo.valor().signum() <= 0) {
             throw new MontoInvalidoException("El monto objetivo debe ser mayor a cero");
         }
-        return new Bolsillo(id, nombre, objetivo, Money.cero(), false);
+        return new Bolsillo(id, nombre.trim(), objetivo, Money.cero(), false);
     }
 
     public static Bolsillo reconstruir(Long id, String nombre, Money objetivo, Money acumulado) {

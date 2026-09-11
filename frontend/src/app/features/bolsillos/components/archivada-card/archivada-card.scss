@@ -8,11 +8,39 @@
   border: 1px solid var(--color-borde);
   border-radius: 12px;
 
+  &__info {
+    min-width: 0;
+  }
+
+  &__titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  &__icono {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: color-mix(in srgb, var(--acento) 16%, #ffffff);
+    border: 1px solid color-mix(in srgb, var(--acento) 28%, transparent);
+  }
+
   &__nombre {
     margin: 0;
     font-family: var(--fuente-display);
     font-size: 1rem;
     font-weight: 600;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__monto {

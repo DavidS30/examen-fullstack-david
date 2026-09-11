@@ -143,3 +143,19 @@ Aplicada tras instalar las skills de `frontend-design` y `accessibility`:
   botón ✏️ en la tarjeta → modal `editar-meta-modal` (dialog nativo) con campos precargados
   y validación.
 - **Tests**: backend 73 y frontend 87, todos en verde.
+
+## 9. Iteración: auditoría `@arch-guard` y correcciones de robustez
+
+Auditoría completa (backend + frontend) → **APROBADO CON OBSERVACIONES** (sin hallazgos
+críticos ni violaciones de la regla dura). Correcciones aplicadas:
+
+- **Backend**: `Bolsillo.crear()` ahora valida nombre no vacío (consistente con `editar()`);
+  `GlobalExceptionHandler` maneja JSON malformado y tipo de parámetro inválido con el mismo
+  contrato `ErrorResponse`; trade-off de `reconstruir()` (no revalida invariantes) documentado
+  en docs/arquitectura.md.
+- **Frontend**: `iconoPorNombre`/`hashNombre`/`acentoPorNombre` movidos a `core/utils/iconos.ts`
+  (reutilizables, sin duplicación); `archivada-card` muestra el mismo icono/acento que su
+  tarjeta; `cargarArchivadas()` registra el error en consola; el reset del form de crear solo
+  ocurre en éxito; `SseService` valida el payload con un type guard (`esBolsillo`) en la
+  frontera; script `npm test` = `ng test --watch=false`; `main.ts` loguea fallos de bootstrap.
+- **Tests**: backend 76 y frontend 94, todos en verde.

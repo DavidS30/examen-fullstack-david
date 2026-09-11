@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { BolsilloCardComponent, iconoPorNombre } from './bolsillo-card';
+import { BolsilloCardComponent } from './bolsillo-card';
 import { BolsillosStoreService } from '../../../../core/services/bolsillos.store';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
 import { AbonoRequest, Bolsillo } from '../../../../core/models/bolsillo.model';
@@ -25,23 +25,6 @@ const bolsillo: Bolsillo = {
   completado: false,
   archivado: false,
 };
-
-describe('iconoPorNombre', () => {
-  it('nombreConPalabraClave_devuelveElIconoDelTema', () => {
-    expect(iconoPorNombre('Viaje a Cartagena')).toBe('✈️');
-    expect(iconoPorNombre('Computador Gamer')).toBe('💻');
-    expect(iconoPorNombre('Fondo de emergencia')).toBe('🪙');
-    expect(iconoPorNombre('Mi casita propia')).toBe('🏠');
-    expect(iconoPorNombre('Carro nuevo')).toBe('🚗');
-  });
-
-  it('nombreSinPalabraClave_devuelveUnIconoDelFallbackEstable', () => {
-    const icono1 = iconoPorNombre('Proyecto personal');
-    const icono2 = iconoPorNombre('Proyecto personal');
-    expect(icono1).toBe(icono2);
-    expect(['🪙', '🐷', '🌴', '✈️', '🏠', '💻', '🎓', '🚗', '💍', '🎁', '🏖️', '📱']).toContain(icono1);
-  });
-});
 
 describe('BolsilloCardComponent', () => {
   let component: BolsilloCardComponent;

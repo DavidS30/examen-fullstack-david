@@ -4,6 +4,22 @@ import { environment } from '../../../environments/environment';
 import { Bolsillo } from '../models/bolsillo.model';
 import { SSE_EVENTOS, SseEventoNombre, SseMensaje } from '../models/sse-events.model';
 
+function esBolsillo(valor: unknown): valor is Bolsillo {
+  if (typeof valor !== 'object' || valor === null) {
+    return false;
+  }
+  const candidato = valor as Record<string, unknown>;
+  return (
+    typeof candidato['id'] === 'number' &&
+    typeof candidato['nombre'] === 'string' &&
+    typeof candidato['objetivo'] === 'number' &&
+    typeof candidato['acumulado'] === 'number' &&
+    typeof candidato['progreso'] === 'number' &&
+    typeof candidato['completado'] === 'boolean' &&
+    typeof candidato['archivado'] === 'boolean'
+  );
+}
+
 @Injectable({ providedIn: 'root' })
 export class SseService {
   private readonly sseUrl = `${environment.apiUrl}/notificaciones`;
@@ -14,8 +30,10 @@ export class SseService {
 
       const parsear = (evento: SseEventoNombre) => (e: MessageEvent) => {
         try {
-          const datos = JSON.parse(e.data) as Bolsillo;
-          subscriber.next({ evento, datos });
+          const datos = JSON.parse(e.data) as unknown;
+          if (esBolsillo(datos)) {
+            subscriber.next({ evento, datos });
+          }
         } catch {
           // Payload malformado: se ignora para no romper el stream.
         }

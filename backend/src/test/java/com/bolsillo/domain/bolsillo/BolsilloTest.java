@@ -25,6 +25,14 @@ class BolsilloTest {
     }
 
     @Test
+    void crear_nombreVacioONulo_lanzaMontoInvalidoException() {
+        assertThrows(MontoInvalidoException.class,
+                () -> Bolsillo.crear(null, "   ", OBJETIVO));
+        assertThrows(MontoInvalidoException.class,
+                () -> Bolsillo.crear(null, null, OBJETIVO));
+    }
+
+    @Test
     void crear_objetivoNegativo_lanzaMontoInvalidoException() {
         assertThrows(MontoInvalidoException.class,
                 () -> Bolsillo.crear(null, "Vacaciones", new Money(new BigDecimal("-500"))));

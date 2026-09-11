@@ -1,6 +1,9 @@
 <article class="archivada">
   <div class="archivada__info">
-    <h3 class="archivada__nombre">{{ bolsillo().nombre }}</h3>
+    <div class="archivada__titulo">
+      <span class="archivada__icono" [style.--acento]="acento()" aria-hidden="true">{{ icono() }}</span>
+      <h3 class="archivada__nombre">{{ bolsillo().nombre }}</h3>
+    </div>
     <p class="archivada__monto">
       {{ bolsillo().acumulado | pesos }}
       <span class="archivada__estado">· 100% completada</span>

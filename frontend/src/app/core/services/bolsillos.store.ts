@@ -82,7 +82,8 @@ export class BolsillosStoreService implements OnDestroy {
   cargarArchivadas(): void {
     this.bolsillosService.listarArchivados().subscribe({
       next: (archivadas) => this.archivadasSignal.set(archivadas),
-      error: () => {},
+      error: (err: unknown) =>
+        console.error('No se pudieron cargar las metas archivadas', err),
     });
   }
 

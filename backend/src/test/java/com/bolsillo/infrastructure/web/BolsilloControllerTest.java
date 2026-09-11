@@ -301,4 +301,20 @@ class BolsilloControllerTest {
                         .content("{\"nombre\":\"X\",\"objetivo\":1000}"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void crear_jsonMalformado_retorna400ConContratoDeError() throws Exception {
+        mockMvc.perform(post("/api/bolsillos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{nombre:}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Solicitud JSON inválida"));
+    }
+
+    @Test
+    void archivar_idNoNumerico_retorna400ConContratoDeError() throws Exception {
+        mockMvc.perform(patch("/api/bolsillos/abc/archivar"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Valor inválido para el parámetro 'id'"));
+    }
 }
