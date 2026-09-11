@@ -159,3 +159,13 @@ críticos ni violaciones de la regla dura). Correcciones aplicadas:
   ocurre en éxito; `SseService` valida el payload con un type guard (`esBolsillo`) en la
   frontera; script `npm test` = `ng test --watch=false`; `main.ts` loguea fallos de bootstrap.
 - **Tests**: backend 76 y frontend 94, todos en verde.
+
+## 10. Iteración: despliegue con docker compose
+
+- **Fix `npm ci`**: el Dockerfile del frontend usa `npm ci`, que requiere `package-lock.json`; se
+  generó el lock (`npm install --package-lock-only`, lockfileVersion 3) y quedó versionado.
+- **Imágenes**: backend y frontend construyen correctamente (multi-stage; el build no corre tests).
+- **Incidente de entorno (no del proyecto)**: el port-forwarder de Docker Desktop devuelve
+  `500` al exponer cualquier puerto (verificado con 8080 y 8085), por lo que `docker compose up`
+  no publica puertos hasta reiniciar Docker Desktop. El stack usa `ports:` estándar y está listo
+  para levantar tras el reinicio.
