@@ -23,9 +23,10 @@ pruebas robustas y ejecutables para el código que se te indique.
     puerto `BolsilloRepository`, no la base real.
   - Endpoints: `@WebMvcTest` + `MockMvc` (mockeando el caso de uso).
   - Nomenclatura de métodos: `metodo_condicion_resultadoEsperado` (Given/When/Then).
-- **Frontend (Angular)**: Jasmine + Karma. `TestBed` para componentes, mocks de servicios
-  con `jasmine.createSpyObj`. Prueba render del listado, submit del formulario de abono y
-  la reacción al evento SSE.
+- **Frontend (Angular 21)**: **Vitest** + TestBed (builder `@angular/build:unit-test`,
+  globals de vitest). NO uses Jasmine/Karma. Componentes standalone con signals; mockea
+  servicios con stubs tipados (nada de `any`) y usa `HttpTestingController` para servicios
+  HTTP. Prueba render del listado, submit del formulario de abono y la reacción al evento SSE.
 
 ## Casos que SIEMPRE debes cubrir para el flujo de abonos
 

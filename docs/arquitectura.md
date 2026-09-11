@@ -3,9 +3,14 @@
 ## Estilo elegido: Hexagonal ligero (Ports & Adapters)
 
 ### ¿Por qué esta arquitectura para el caso de negocio?
-_(Completar en la sustentación: aísla las reglas de ahorro/abono de los frameworks;
-permite testear casos de uso sin Spring ni base de datos; el mismo dominio soportaría
-cambiar H2 por Postgres o SSE por WebSocket cambiando solo el adaptador.)_
+Aísla las reglas de ahorro/abono (monto > 0, no exceder el objetivo, 100%) de los frameworks:
+- El dominio (`Bolsillo`, `Money`) es Java puro y testeable sin Spring ni base de datos.
+- Los casos de uso (`application/`) solo conocen puertos (`BolsilloRepository`,
+  `NotificadorPort`), nunca JPA ni `SseEmitter`; se registran como `@Bean` en
+  `infrastructure/config/UseCaseConfig`, por lo que la capa application no importa Spring.
+- Cambiar H2 por Postgres, o SSE por WebSocket, requiere tocar solo el adaptador
+  (`infrastructure/`). Para una demo de horas esto permite defender el aislamiento de reglas
+  sin el boilerplate de una Clean Architecture de 4 capas.
 
 ### Alternativas descartadas y trade-offs
 - **Clean Architecture completa (4 capas + mappers)**: más pura pero más boilerplate;
@@ -44,3 +49,16 @@ Se decidió **no** usar un paquete compartido: Java y TypeScript no comparten ru
 generar contratos cross-lenguaje (OpenAPI codegen) consumiría tiempo sin valor para un
 demo de horas. Los contratos se duplican como DTOs Java (Bean Validation) e interfaces TS
 espejo. El enunciado contempla explícitamente esta opción como válida.
+
+## Trade-offs asumidos (conscientes y defendibles)
+
+- **Sin transacciones explícitas en el flujo read-modify-write del abono**: el caso de uso
+  hace `findById` + `save` en transacciones separadas. En concurrencia real habría riesgo
+  de *lost update*; se aceptó porque H2 es single-user y el alcance es una demo. Mitigarlo
+  (envolver el caso de uso en `@Transactional`) habría añadido un puerto de transacciones a
+  la capa application, sobre-ingeniería para este contexto.
+- **SSE sobre WebSocket**: comunicación unidireccional servidor→cliente; menos piezas.
+  Si la conexión cae, `EventSource` reconecta; el frontend usa además la respuesta HTTP del
+  abono como fallback idempotente (el payload SSE y el HTTP traen el mismo estado).
+- **Sin Lombok/MapStruct**: se prefirió código explícito (records + getters a mano) para que
+  el evaluador lea el flujo sin anotaciones mágicas; el costo de boilerplate es bajo.
