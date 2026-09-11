@@ -12,7 +12,7 @@
   <h2 class="modal__titulo">¡Meta alcanzada!</h2>
   <p class="modal__texto">
     Lograste completar el bolsillo <strong>{{ bolsillo().nombre }}</strong> con
-    <strong>$ {{ bolsillo().acumulado | number }}</strong>. ¡Felicitaciones! 🎯
+    <strong>{{ bolsillo().acumulado | pesos }}</strong>. ¡Felicitaciones! 🎯
   </p>
   <button class="modal__btn" (click)="cerrarDialogo()">Cerrar</button>
 </dialog>

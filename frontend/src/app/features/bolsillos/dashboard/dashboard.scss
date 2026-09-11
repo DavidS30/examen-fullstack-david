@@ -214,6 +214,14 @@
     }
   }
 
+  &__campo {
+    .campo__error {
+      margin: 6px 0 0;
+      color: var(--color-peligro);
+      font-size: 0.82rem;
+    }
+  }
+
   &__btn {
     padding: 12px 24px;
     min-height: 44px;

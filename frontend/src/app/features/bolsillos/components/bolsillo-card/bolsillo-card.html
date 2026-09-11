@@ -11,8 +11,8 @@
   </header>
 
   <div class="card__monto">
-    <span class="card__monto-actual">$ {{ bolsillo().acumulado | number }}</span>
-    <span class="card__monto-objetivo">de $ {{ bolsillo().objetivo | number }}</span>
+    <span class="card__monto-actual">{{ bolsillo().acumulado | pesos }}</span>
+    <span class="card__monto-objetivo">de {{ bolsillo().objetivo | pesos }}</span>
   </div>
 
   <div
@@ -29,7 +29,7 @@
   <div class="card__progreso-line">
     <span class="card__progreso">{{ bolsillo().progreso }}%</span>
     @if (!bolsillo().completado) {
-      <span class="card__restante">Faltan $ {{ bolsillo().objetivo - bolsillo().acumulado | number }}</span>
+      <span class="card__restante">Faltan {{ bolsillo().objetivo - bolsillo().acumulado | pesos }}</span>
     }
   </div>
 

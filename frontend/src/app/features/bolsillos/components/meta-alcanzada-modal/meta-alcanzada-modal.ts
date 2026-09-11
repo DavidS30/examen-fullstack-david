@@ -1,6 +1,7 @@
 import { Component, ElementRef, AfterViewInit, input, output, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Bolsillo } from '../../../../core/models/bolsillo.model';
+import { PesosPipe } from '../../../../core/pipes/pesos.pipe';
 
 interface PiezaConfeti {
   indice: number;
@@ -12,7 +13,7 @@ const COLORES_CONFETI = ['#f59e0b', '#0d9488', '#16a34a', '#f43f5e', '#3b82f6', 
 @Component({
   selector: 'app-meta-alcanzada-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PesosPipe],
   templateUrl: './meta-alcanzada-modal.html',
   styleUrl: './meta-alcanzada-modal.scss',
 })

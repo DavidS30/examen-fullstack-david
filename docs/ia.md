@@ -98,3 +98,19 @@ Aplicada tras instalar las skills de `frontend-design` y `accessibility`:
   estado en backend, coherente con el alcance cerrado. Documentada en docs/arquitectura.md.
 - **Tests**: +14 (usuario.service, bienvenida-modal y dashboard con stub del `UsuarioService`).
   Total frontend: 53 en verde.
+
+## 6. Iteración: notificaciones de negocio y pesos colombianos
+
+- **Sistema de notificaciones global**: `NotificacionService` (signal de toasts con
+  auto-cierre, tipos éxito/error) + `NotificacionesComponent` montado en el root
+  (`aria-live`/`role=alert`, botón cerrar). El dashboard y la tarjeta de abono publican
+  toast de éxito ("Meta creada", "Abono registrado") y de error (mensaje real del backend).
+- **Errores de validación en formularios**: mensajes inline bajo los campos (nombre/objetivo
+  en crear, monto en abono) con `aria-invalid` y `role=alert`, además del error del servidor.
+- **Pesos colombianos**: pipe `pesos` basado en `Intl.NumberFormat('es-CO', COP)` (p.ej.
+  `$ 1.000.000`), aplicado en stats, tarjetas, modal y "faltan"; los inputs numéricos pasan
+  de `step="0.01"` a `step="100"` con placeholders "mín. $100".
+- **Ajuste técnico**: el pipe normaliza el NBSP que emite `Intl` por un espacio regular para
+  un formato estable.
+- **Tests**: +12 (pesos.pipe, notificacion.service, notificaciones.component y casos de
+  toast/error inline en card y abono-form). Total frontend: 65 en verde.

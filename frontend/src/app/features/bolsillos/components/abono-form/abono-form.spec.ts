@@ -71,4 +71,24 @@ describe('AbonoFormComponent', () => {
     const btn = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
     expect(btn.disabled).toBe(true);
   });
+
+  it('montoInvalidoYTocado_muestraElErrorInline', () => {
+    const input = fixture.nativeElement.querySelector(
+      'input[formControlName="monto"]'
+    ) as HTMLInputElement;
+    input.value = '0';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('El monto debe ser mayor a $0.');
+  });
+
+  it('montoConStep100_lasFlechasIncrementanDeACien', () => {
+    const input = fixture.nativeElement.querySelector(
+      'input[formControlName="monto"]'
+    ) as HTMLInputElement;
+    expect(input.step).toBe('100');
+  });
 });

@@ -5,9 +5,9 @@
       [id]="campoId"
       type="number"
       min="1"
-      step="0.01"
+      step="100"
       formControlName="monto"
-      placeholder="Monto a abonar"
+      placeholder="Monto a abonar (mín. $100)"
       [attr.aria-invalid]="form.controls.monto.invalid && form.controls.monto.touched"
       aria-describedby="abono-error"
     />
@@ -15,7 +15,10 @@
       Abonar
     </button>
   </div>
+  @if (form.controls.monto.invalid && form.controls.monto.touched) {
+    <p id="abono-error" class="abono-form__error" role="alert">El monto debe ser mayor a $0.</p>
+  }
   @if (errorServidor(); as mensaje) {
-    <p id="abono-error" class="abono-form__error" role="alert">{{ mensaje }}</p>
+    <p id="abono-error-servidor" class="abono-form__error" role="alert">{{ mensaje }}</p>
   }
 </form>

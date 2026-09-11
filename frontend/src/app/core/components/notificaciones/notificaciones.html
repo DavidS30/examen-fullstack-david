@@ -1,0 +1,23 @@
+<div class="notificaciones">
+  @for (notificacion of notificaciones(); track notificacion.id) {
+    <div
+      class="notificacion"
+      [class.notificacion--error]="notificacion.tipo === 'error'"
+      [class.notificacion--exito]="notificacion.tipo === 'exito'"
+      [attr.role]="notificacion.tipo === 'error' ? 'alert' : 'status'"
+    >
+      <span class="notificacion__icono" aria-hidden="true">
+        {{ notificacion.tipo === 'error' ? '✕' : '✓' }}
+      </span>
+      <p class="notificacion__mensaje">{{ notificacion.mensaje }}</p>
+      <button
+        type="button"
+        class="notificacion__cerrar"
+        (click)="cerrar(notificacion.id)"
+        aria-label="Cerrar notificación"
+      >
+        ✕
+      </button>
+    </div>
+  }
+</div>

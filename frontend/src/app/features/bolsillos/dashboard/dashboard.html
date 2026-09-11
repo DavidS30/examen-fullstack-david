@@ -28,7 +28,7 @@
   <section class="dashboard__stats" aria-label="Resumen de ahorro">
     <div class="dashboard__stat">
       <span class="dashboard__stat-label">Total ahorrado</span>
-      <span class="dashboard__stat-valor">$ {{ totalAhorrado() | number }}</span>
+      <span class="dashboard__stat-valor">{{ totalAhorrado() | pesos }}</span>
     </div>
     <div class="dashboard__stat">
       <span class="dashboard__stat-label">Metas completadas</span>
@@ -45,18 +45,26 @@
           type="text"
           formControlName="nombre"
           placeholder="Nombre de la meta (ej. Viaje a Cartagena)"
+          [attr.aria-invalid]="crearForm.controls.nombre.invalid && crearForm.controls.nombre.touched"
         />
+        @if (crearForm.controls.nombre.invalid && crearForm.controls.nombre.touched) {
+          <p class="campo__error" role="alert">El nombre debe tener al menos 3 caracteres.</p>
+        }
       </div>
       <div class="crear-form__campo">
         <label class="visually-hidden" for="crear-objetivo">Monto objetivo</label>
         <input
           id="crear-objetivo"
           type="number"
-          min="1"
-          step="0.01"
+          min="100"
+          step="100"
           formControlName="objetivo"
-          placeholder="Monto objetivo"
+          placeholder="Monto objetivo (mín. $100)"
+          [attr.aria-invalid]="crearForm.controls.objetivo.invalid && crearForm.controls.objetivo.touched"
         />
+        @if (crearForm.controls.objetivo.invalid && crearForm.controls.objetivo.touched) {
+          <p class="campo__error" role="alert">El objetivo debe ser mayor a $0.</p>
+        }
       </div>
       <button type="submit" [disabled]="crearForm.invalid" class="crear-form__btn">
         Crear meta

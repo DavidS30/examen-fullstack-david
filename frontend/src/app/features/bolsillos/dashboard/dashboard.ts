@@ -1,6 +1,8 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PesosPipe } from '../../../core/pipes/pesos.pipe';
+import { NotificacionService } from '../../../core/services/notificacion.service';
 import { BolsillosStoreService } from '../../../core/services/bolsillos.store';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { extraerMensajeError } from '../../../core/utils/errores';
@@ -14,6 +16,7 @@ import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    PesosPipe,
     BienvenidaModalComponent,
     BolsilloCardComponent,
     MetaAlcanzadaModalComponent,
@@ -24,6 +27,7 @@ import { MetaAlcanzadaModalComponent } from '../components/meta-alcanzada-modal/
 export class DashboardPage implements OnInit, OnDestroy {
   private readonly store = inject(BolsillosStoreService);
   private readonly usuarioService = inject(UsuarioService);
+  private readonly notificaciones = inject(NotificacionService);
   private readonly fb = inject(FormBuilder);
 
   readonly bolsillos = this.store.bolsillos;
@@ -83,7 +87,12 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.errorCrear.set(null);
     const { nombre, objetivo } = this.crearForm.getRawValue();
     this.store.crear({ nombre, objetivo }).subscribe({
-      error: (err: unknown) => this.errorCrear.set(extraerMensajeError(err)),
+      next: () => this.notificaciones.exito('Meta creada'),
+      error: (err: unknown) => {
+        const mensaje = extraerMensajeError(err);
+        this.errorCrear.set(mensaje);
+        this.notificaciones.error(mensaje);
+      },
     });
     this.crearForm.reset({ nombre: '', objetivo: 0 });
   }
