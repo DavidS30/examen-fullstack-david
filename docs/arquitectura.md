@@ -62,6 +62,10 @@ espejo. El enunciado contempla explícitamente esta opción como válida.
   abono como fallback idempotente (el payload SSE y el HTTP traen el mismo estado).
 - **Sin Lombok/MapStruct**: se prefirió código explícito (records + getters a mano) para que
   el evaluador lea el flujo sin anotaciones mágicas; el costo de boilerplate es bajo.
+- **`Bolsillo.reconstruir()` no revalida invariantes**: asume que los datos vienen de la
+  persistencia (ya validados al mutarse). Validar ahí duplicaría reglas por cada carga; el
+  trade-off se acepta porque la única escritura es a través del dominio. Documentado por
+  auditoría de `@arch-guard`.
 - **Identificación local del usuario (localStorage)**: se guarda únicamente el nombre en
   `localStorage` (`bolsillo:usuario`) para personalizar la UI (saludo, empty state). NO es
   autenticación: no hay credenciales ni estado en el backend, coherente con el alcance
