@@ -42,17 +42,17 @@ meta llega al 100%.
 
 ## 📸 Capturas
 
-| Dashboard de metas | Formulario de creación |
+| Inicio Usuario | Formulario de creación y dashboard |
 |---------------------|------------------------|
 | ![Dashboard](images/image.png) | ![Crear meta](images/image2.png) |
 
 | Tarjeta y registro de abono | Meta alcanzada (modal) |
 |------------------------------|--------------------------|
-| ![Abono](images/image3.png) | ![Meta alcanzada](images/image4.png) |
+| ![Abono](images/image3.png) | ![Meta alcanzada](images/image6.png) |
 
 | Metas archivadas | Edición de meta |
 |------------------|------------------|
-| ![Archivadas](images/image5.png) | ![Editar meta](images/image6.png) |
+| ![Archivadas](images/image7.png) | ![Editar meta](images/image5.png) |
 
 ---
 
