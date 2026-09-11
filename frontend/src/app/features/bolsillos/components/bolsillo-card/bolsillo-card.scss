@@ -1,0 +1,83 @@
+.card {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: 20px;
+  box-shadow: var(--sombra-suave);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &--completado {
+    border-color: var(--color-exito);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  &__nombre {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  &__estado {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-texto-suave);
+
+    &--ok {
+      color: var(--color-exito);
+      font-weight: 700;
+    }
+  }
+
+  &__monto {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  &__monto-actual {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  &__monto-objetivo {
+    color: var(--color-texto-suave);
+  }
+
+  &__barra {
+    height: 10px;
+    background: var(--color-borde);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  &__barra-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primario), var(--color-exito));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  &__progreso {
+    margin: -6px 0 0;
+    text-align: right;
+    font-weight: 500;
+    color: var(--color-texto-suave);
+  }
+
+  &__completado-msg {
+    text-align: center;
+    font-weight: 600;
+    color: var(--color-exito);
+    padding: 10px;
+    background: #f0fdf4;
+    border-radius: 8px;
+  }
+}

@@ -1,0 +1,121 @@
+.dashboard {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__titulo {
+    margin: 0;
+    font-size: 1.8rem;
+  }
+
+  &__subtitulo {
+    margin: 4px 0 0;
+    color: var(--color-texto-suave);
+  }
+
+  &__live {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ecfdf5;
+    color: var(--color-exito);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #a7f3d0;
+  }
+
+  &__live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-exito);
+    animation: pulso 1.4s ease-in-out infinite;
+  }
+
+  &__crear {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    padding: 16px;
+    box-shadow: var(--sombra-suave);
+    margin-bottom: 24px;
+  }
+
+  &__error {
+    margin: 10px 0 0;
+    color: #dc2626;
+    font-size: 0.9rem;
+  }
+
+  &__lista {
+    min-height: 120px;
+  }
+
+  &__estado {
+    color: var(--color-texto-suave);
+    text-align: center;
+    padding: 40px 0;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+}
+
+.crear-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  input {
+    padding: 10px 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: 8px;
+    flex: 1 1 200px;
+
+    &:focus {
+      outline: 2px solid var(--color-primario);
+      outline-offset: 1px;
+    }
+  }
+
+  &__btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--color-primario);
+    color: #fff;
+    font-weight: 600;
+
+    &:hover {
+      background: var(--color-primario-oscuro);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@keyframes pulso {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}

@@ -1,0 +1,13 @@
+<div class="modal-backdrop" (click)="cerrar.emit()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" (click)="$event.stopPropagation()">
+    <div class="modal__confeti" aria-hidden="true">
+      <span>🎉</span><span>✨</span><span>🎊</span><span>🌟</span>
+    </div>
+    <h2 id="modal-titulo" class="modal__titulo">¡Meta alcanzada!</h2>
+    <p class="modal__texto">
+      Lograste completar el bolsillo <strong>{{ bolsillo().nombre }}</strong> con
+      <strong>$ {{ bolsillo().acumulado | number }}</strong>. ¡Felicitaciones! 🎯
+    </p>
+    <button class="modal__btn" (click)="cerrar.emit()">Cerrar</button>
+  </div>
+</div>

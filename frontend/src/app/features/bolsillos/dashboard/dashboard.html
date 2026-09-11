@@ -1,0 +1,59 @@
+<main class="dashboard">
+  <header class="dashboard__header">
+    <div>
+      <h1 class="dashboard__titulo">Bolsillo de Ahorro Programado</h1>
+      <p class="dashboard__subtitulo">Crea metas, abona y observa tu progreso en tiempo real.</p>
+    </div>
+    <span class="dashboard__live">
+      <span class="dashboard__live-dot"></span>
+      Tiempo real
+    </span>
+  </header>
+
+  <section class="dashboard__crear">
+    <form [formGroup]="crearForm" (ngSubmit)="crearBolsillo()" class="crear-form">
+      <input
+        type="text"
+        formControlName="nombre"
+        placeholder="Nombre de la meta (ej. Viaje a Cartagena)"
+        aria-label="Nombre de la meta"
+      />
+      <input
+        type="number"
+        min="1"
+        step="0.01"
+        formControlName="objetivo"
+        placeholder="Monto objetivo"
+        aria-label="Monto objetivo"
+      />
+      <button type="submit" [disabled]="crearForm.invalid" class="crear-form__btn">
+        Crear meta
+      </button>
+    </form>
+    @if (errorCrear(); as error) {
+      <p class="dashboard__error" role="alert">{{ error }}</p>
+    }
+  </section>
+
+  <section class="dashboard__lista">
+    @if (cargando()) {
+      <p class="dashboard__estado">Cargando metas…</p>
+    } @else if (errorCarga(); as error) {
+      <p class="dashboard__error" role="alert">No pudimos cargar tus metas: {{ error }}</p>
+    } @else if (bolsillos().length === 0) {
+      <p class="dashboard__estado">
+        Aún no tienes metas. Crea la primera con el formulario de arriba.
+      </p>
+    } @else {
+      <div class="dashboard__grid">
+        @for (bolsillo of bolsillos(); track bolsillo.id) {
+          <app-bolsillo-card [bolsillo]="bolsillo" />
+        }
+      </div>
+    }
+  </section>
+
+  @if (metaAlcanzada(); as bolsillo) {
+    <app-meta-alcanzada-modal [bolsillo]="bolsillo" (cerrar)="cerrarModal()" />
+  }
+</main>

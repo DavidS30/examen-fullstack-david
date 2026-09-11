@@ -1,0 +1,30 @@
+<article class="card" [class.card--completado]="bolsillo().completado">
+  <header class="card__header">
+    <h3 class="card__nombre">{{ bolsillo().nombre }}</h3>
+    <span class="card__estado" [class.card__estado--ok]="bolsillo().completado">
+      {{ bolsillo().completado ? 'Completada' : 'En progreso' }}
+    </span>
+  </header>
+
+  <div class="card__monto">
+    <span class="card__monto-actual">$ {{ bolsillo().acumulado | number }}</span>
+    <span class="card__monto-objetivo">de $ {{ bolsillo().objetivo | number }}</span>
+  </div>
+
+  <div class="card__barra" role="progressbar" [attr.aria-valuenow]="bolsillo().progreso" aria-valuemin="0" aria-valuemax="100">
+    <div class="card__barra-fill" [style.width.%]="bolsillo().progreso"></div>
+  </div>
+  <p class="card__progreso">{{ bolsillo().progreso }}%</p>
+
+  @if (bolsillo().completado) {
+    <div class="card__completado-msg">
+      ¡Meta alcanzada! 🎉
+    </div>
+  } @else {
+    <app-abono-form
+      (abonar)="abonar($event)"
+      [disabled]="abonando()"
+      [errorServidor]="errorAbono()"
+    />
+  }
+</article>

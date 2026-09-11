@@ -1,0 +1,68 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(15 23 42 / 0.6);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  animation: aparecer 0.2s ease;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 40px;
+  max-width: 420px;
+  width: calc(100% - 32px);
+  text-align: center;
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.25);
+  position: relative;
+
+  &__confeti {
+    font-size: 1.8rem;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    animation: flotar 1.6s ease-in-out infinite;
+  }
+
+  &__titulo {
+    margin: 12px 0 8px;
+    color: var(--color-exito);
+  }
+
+  &__texto {
+    color: var(--color-texto-suave);
+    line-height: 1.5;
+  }
+
+  &__btn {
+    margin-top: 16px;
+    padding: 10px 28px;
+    border: none;
+    border-radius: 10px;
+    background: var(--color-primario);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
